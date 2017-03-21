@@ -1,1 +1,2 @@
-# aisd
+# AiSD
+Projekcik na studia
