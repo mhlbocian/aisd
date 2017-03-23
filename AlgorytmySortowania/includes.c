@@ -83,13 +83,52 @@ void insertion_sort(int array[], int size)
 /* MERGE SORT */
 void merge(int tab[], int first, int middle, int last)
 {
-    // uszkodzony algo
+    int pom[last - first];
+    int i = first, j = middle + 1, k = 0;
+
+    while(i <= middle && j <= last)
+    {
+        if(tab[j] < tab[i])
+        {
+            pom[k] = tab[j];
+            ++j;
+        }
+        else
+        {
+            pom[k] = tab[i];
+            ++i;
+        }
+        ++k;
+    }
+
+    if(i <= middle)
+    {
+        while(i <= middle)
+        {
+            pom[k] = tab[i];
+            ++i;
+            ++k;
+        }
+    }
+    else
+    {
+        while(j <= last)
+        {
+            pom[k] = tab[j];
+            ++j;
+            ++k;
+        }
+    }
+
+    for (i = 0; i <= last - first; ++i)
+        tab[first + i] = pom[i];
 }
 
 void merge_sort(int tab[], int first, int last)
 {
-    int middle = (first + last) / 2;
+    int middle;
     if(first == last) return;
+    middle = (first + last) / 2;
     merge_sort(tab, first, middle);
     merge_sort(tab, middle + 1, last);
     merge(tab, first, middle, last);

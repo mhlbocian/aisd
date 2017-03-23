@@ -4,13 +4,12 @@
 #include <string.h>
 #include <time.h>
 
-#define DEBUG 1
 #define THO 1000
 #define dot() printf(".")
 
 typedef struct {
     char name[20];
-    int (*gen)(int*,int);
+    void (*gen)(int*,int);
 } gen_t;
 
 void genv(int* tab, int size)
@@ -30,23 +29,23 @@ void gena(int* tab, int size)
     
     for(; i < size; ++i)
     {
-        if(i > size / 2) tab[i] = val--;
-        else tab[i] = val++;
+        if(i > size / 2) tab[i] = --val;
+        else tab[i] = ++val;
     }
 }
 
 void genr(int* tab, int size)
 {
     int i = 0;
-    
-    for(; i < size; ++i) tab[i] = rand();
+
+    for(; i < size; ++i) tab[i] = rand() % 10000;
 }
 
 void geninc(int* tab, int size)
 {
     int i = 0;
 
-    for(; i < size; ++i) tab[i] = i;
+    for(; i < size; ++i) tab[i] = i + 1;
 }
 
 void gendec(int* tab, int size)
@@ -57,6 +56,9 @@ void gendec(int* tab, int size)
 
 int main (int argc, const char** argv)
 {
+    srand(time(NULL));
+    setbuf(stdout, NULL);
+
     int *tab, *wrk;
     int i, n, start, stop, inc, genno;
     clock_t mtime;
@@ -78,20 +80,12 @@ int main (int argc, const char** argv)
     strcpy(gen[4].name, "MALEJACY");
     gen[4].gen = gendec;
 
-    srand(time(NULL));
-
-#ifndef DEBUG
     printf("Poczatek pomiaru: ");
     scanf("%d", &start);
     printf("Koniec pomiaru: ");
     scanf("%d", &stop);
     printf("Ilosc pomiarow: ");
     scanf("%d", &n);
-#else
-    start = 10000;
-    stop = 20000;
-    n = 15;
-#endif
     inc = (stop - start) / n;
 
     for(genno = 0; genno < 5; ++genno){
@@ -124,11 +118,11 @@ int main (int argc, const char** argv)
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / THO);
 
-            //MERGE-SORT POMIAR nie dziala
+            //MERGE-SORT POMIAR
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
-            // TU WSTAWIC FUNKCJE
+            merge_sort(tab, 0, stop - 1);
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / THO);
 
