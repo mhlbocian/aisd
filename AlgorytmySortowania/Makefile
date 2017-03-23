@@ -1,4 +1,4 @@
 CC = "gcc"
 
-main: main.c includes.c
-	$(CC) -o main main.c includes.c
+main.o: main.c includes.c
+	$(CC) -o main.o main.c includes.c
