@@ -1,58 +1,21 @@
+/**
+ * POLITECHNIKA POZNANSKA - WYDZIAL INFORMATYKI - INFORMATYKA I
+ * ALGORYTMY I STRUKTURY DANYCH
+ * 
+ * Algorytmy sortowania - mierzenie czasow wykonywania
+ * 
+ * Autorzy: Michal Bocian, Ewa Fengler
+ * Rok akademicki: 2016/2017
+ */
+
 #include "includes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#define THO 1000
+#define T 1000 /* dzielnik mierzonego czasu */
 #define dot() printf(".")
-
-typedef struct {
-    char name[20];
-    void (*gen)(int*,int);
-} gen_t;
-
-void genv(int* tab, int size)
-{
-    int i = 0, val = size + 1;
-    
-    for(; i < size; ++i)
-    {
-        if(i > size / 2) tab[i] = ++val;
-        else tab[i] = --val;
-    }
-}
-
-void gena(int* tab, int size)
-{
-    int i = 0, val = 0;
-    
-    for(; i < size; ++i)
-    {
-        if(i > size / 2) tab[i] = --val;
-        else tab[i] = ++val;
-    }
-}
-
-void genr(int* tab, int size)
-{
-    int i = 0;
-
-    for(; i < size; ++i) tab[i] = rand() % 10000;
-}
-
-void geninc(int* tab, int size)
-{
-    int i = 0;
-
-    for(; i < size; ++i) tab[i] = i + 1;
-}
-
-void gendec(int* tab, int size)
-{
-    int i = 0;
-    for(; i< size; ++i) tab[i] = size - i;
-}
 
 int main (int argc, const char** argv)
 {
@@ -60,25 +23,25 @@ int main (int argc, const char** argv)
     setbuf(stdout, NULL);
 
     int *tab, *wrk;
-    int i, n, start, stop, inc, genno;
+    int i, n, start, stop, inc, genid;
     clock_t mtime;
     FILE *file = fopen("wyniki.csv", "w");
     gen_t gen[5];
 
-    strcpy(gen[0].name, "V-KSZTALTNY");
+    strcpy(gen[0].name, "[v-ksztaltny]");
     gen[0].gen = genv;
 
-    strcpy(gen[1].name, "A-KSZTALTNY");
+    strcpy(gen[1].name, "[a-ksztaltny]");
     gen[1].gen = gena;
 
-    strcpy(gen[2].name, "LOSOWY");
+    strcpy(gen[2].name, "[losowy]");
     gen[2].gen = genr;
 
-    strcpy(gen[3].name, "ROSNACY");
-    gen[3].gen = geninc;
+    strcpy(gen[3].name, "[rosnacy]");
+    gen[3].gen = geni;
 
-    strcpy(gen[4].name, "MALEJACY");
-    gen[4].gen = gendec;
+    strcpy(gen[4].name, "[malejacy]");
+    gen[4].gen = gend;
 
     printf("Poczatek pomiaru: ");
     scanf("%d", &start);
@@ -88,67 +51,67 @@ int main (int argc, const char** argv)
     scanf("%d", &n);
     inc = (stop - start) / n;
 
-    for(genno = 0; genno < 5; ++genno){
-        printf("%s\n", gen[genno].name);
-        fprintf(file, "%s\n", gen[genno].name);
-        fprintf(file, "N;HEA;INS;MER;SEL;QRC;QIT\n");
+    for(genid = 0; genid < 5; ++genid){
+        printf("%s\n", gen[genid].name);
+        fprintf(file, "%s\n", gen[genid].name);
+        fprintf(file, "proba;heap;ins;merge;sel;quick-rec;quick-it\n");
         for(i = 0; i < n; ++i)
         {
-            stop = start + i * inc; //niepotrzebny stop przechowuje rozmiar tablicy
-            printf("%d ", stop); //zeby widziec postep prac
+            stop = start + i * inc; /* stop - rozmiar tablicy */
+            printf("%d ", stop);
             fprintf(file, "%d;", stop);
 
             tab = (int*)malloc(stop * sizeof(int));
             wrk = (int*)malloc(stop * sizeof(int));
-            gen[genno].gen(tab, stop);
+            gen[genid].gen(tab, stop);
 
-            //HEAP-SORT POMIAR
+            /* pomiar: heapsort */
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             heap_sort(wrk, stop);
             mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / THO);
+            fprintf(file, "%ld;", mtime / T);
 
-            //INSERTION-SORT POMIAR
+            /* pomiar: insertion sort */
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             insertion_sort(wrk, stop);
             mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / THO);
+            fprintf(file, "%ld;", mtime / T);
 
-            //MERGE-SORT POMIAR
+            /* pomiar: merge sort */
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             merge_sort(tab, 0, stop - 1);
             mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / THO);
+            fprintf(file, "%ld;", mtime / T);
 
-            //SELECTION-SORT POMIAR
+            /* pomiar: selection sort */
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             selection_sort(wrk, stop);
             mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / THO);
+            fprintf(file, "%ld;", mtime / T);
 
-            //QUICK-SORT REKURENCYJNY POMIAR
+            /* pomiar: quick sort */
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             quick_sort(wrk, 0, stop - 1);
             mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / THO);
+            fprintf(file, "%ld;", mtime / T);
 
-            //QUICK-SORT ITERACYJNY POMIAR
+            /* pomiar: quick sort iteracyjny */
             dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             quick_sort_it(wrk, 0, stop - 1);
             mtime = clock() - mtime;
-            fprintf(file, "%ld", mtime / THO);
+            fprintf(file, "%ld", mtime / T);
 
             fprintf(file, "\n");
             printf("\n");
