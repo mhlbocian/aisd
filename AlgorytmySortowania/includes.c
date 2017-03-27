@@ -204,14 +204,56 @@ int partition(int tab[], int p, int r)
     }
 }
 
-void quick_sort(int tab[], int p, int r)
+int partition_right(int tab[], int p, int r)
+{
+    int pv = tab[r - 1];
+    int i = p - 1;
+    int j = r + 1;
+    for(;;)
+    {
+        do{++i;} while(tab[i] < pv);
+        do{--j;} while(tab[j] > pv);
+        if(i >= j) return j;
+        swap_element(tab, i, j);
+    }
+}
+
+int partition_middle(int tab[], int p, int r)
+{
+    int pv = tab[(p + r) / 2];
+    int i = p - 1;
+    int j = r + 1;
+    for(;;)
+    {
+        do{++i;} while(tab[i] < pv);
+        do{--j;} while(tab[j] > pv);
+        if(i >= j) return j;
+        swap_element(tab, i, j);
+    }
+}
+
+int partition_random(int tab[], int p, int r)
+{
+    int pv = tab[p + rand() % (r - p + 1)];
+    int i = p - 1;
+    int j = r + 1;
+    for(;;)
+    {
+        do{++i;} while(tab[i] < pv);
+        do{--j;} while(tab[j] > pv);
+        if(i >= j) return j;
+        swap_element(tab, i, j);
+    }
+}
+
+void quick_sort(int tab[], int p, int r, int (*funcPtr)(int*, int, int))
 {
     int q;
     if(p < r)
     {
-        q = partition(tab, p, r);
-        quick_sort(tab, p, q);
-        quick_sort(tab, q + 1, r);
+        q = funcPtr(tab, p, r);
+        quick_sort(tab, p, q, funcPtr);
+        quick_sort(tab, q + 1, r, funcPtr);
     }
 }
 

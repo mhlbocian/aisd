@@ -15,7 +15,7 @@ void print_array(int tab[], int size);
 void swap_element(int tab[], int indexA, int indexB);
 /* generatory */
 typedef struct {
-    char name[20];
+    const char name[20];
     void (*gen)(int*,int);
 } gen_t;
 void gena(int* tab, int size); /* a-ksztaltny */
@@ -37,6 +37,9 @@ void merge_sort(int tab[], int first, int last);
 void selection_sort(int tab[], int size);
 /* sortowanie przez podział */
 int partition(int tab[], int p, int r);
-void quick_sort(int tab[], int p, int r);
+int partition_right(int tab[], int p, int r);
+int partition_middle(int tab[], int p, int r);
+int partition_random(int tab[], int p, int r);
+void quick_sort(int tab[], int p, int r, int (*funcPtr)(int*, int, int));
 void quick_sort_it(int tab[], int p, int r);
 #endif

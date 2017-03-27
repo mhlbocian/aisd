@@ -14,6 +14,15 @@
 #include <string.h>
 #include <time.h>
 
+#define OUT_FILE1 "wyniki1.csv"
+#define OUT_FILE1_HEADER "Proba;ISort;SSort;HSort;MSort\n"
+
+#define OUT_FILE2 "wyniki2.csv"
+#define OUT_FILE2_HEADER "Proba;Q-Rec;Q-Iter\n"
+
+#define OUT_FILE3 "wyniki3.csv"
+#define OUT_FILE3_HEADER "Proba;Prawy;Srodek;Losowy\n"
+
 #define T 1000 /* dzielnik mierzonego czasu */
 #define progress() printf("%ld ", mtime / T)
 
@@ -25,27 +34,17 @@ int main (int argc, const char** argv)
     int *tab, *wrk;
     int i, n, start, stop, inc, genid;
     clock_t mtime;
-    FILE *file = fopen("wyniki.csv", "w");
-    gen_t gen[6];
-
-    strcpy(gen[0].name, "[v-ksztaltny]");
-    gen[0].gen = genv;
-
-    strcpy(gen[1].name, "[a-ksztaltny]");
-    gen[1].gen = gena;
-
-    strcpy(gen[2].name, "[losowy]");
-    gen[2].gen = genr;
-
-    strcpy(gen[3].name, "[rosnacy]");
-    gen[3].gen = geni;
-
-    strcpy(gen[4].name, "[malejacy]");
-    gen[4].gen = gend;
-
-    strcpy(gen[5].name, "[staly]");
-    gen[5].gen = genc;
-
+    FILE *file;
+    gen_t gen[6] = {
+	{"v-ksztaltny", genv},
+	{"a-ksztaltny", gena},
+	{"pseudolosowy", genr},
+	{"rosnacy", geni},
+	{"malejacy", gend},
+	{"staly", genc}
+    };
+    
+test1:
     printf("Poczatek pomiaru: ");
     scanf("%d", &start);
     printf("Koniec pomiaru: ");
@@ -54,75 +53,157 @@ int main (int argc, const char** argv)
     scanf("%d", &n);
     inc = (stop - start) / n;
 
+    file = fopen(OUT_FILE1, "w");
     for(genid = 0; genid < 6; ++genid){
-        printf("%s\n", gen[genid].name);
-        fprintf(file, "%s\n", gen[genid].name);
-        fprintf(file, "proba;heap;ins;merge;sel;quick-rec;quick-it\n");
-        for(i = 0; i < n + 1; ++i)
-        {
-            stop = start + i * inc; /* stop - rozmiar tablicy */
-            printf("%d ", stop);
-            fprintf(file, "%d;", stop);
+	printf("%s\n", gen[genid].name);
+	fprintf(file, "%s\n", gen[genid].name);
+	fprintf(file, OUT_FILE1_HEADER);
+	for(i = 0; i < n + 1; ++i)
+	{
+	    stop = start + i * inc; /* stop - rozmiar tablicy */
+	    printf("%d ", stop);
+	    fprintf(file, "%d;", stop);
 
-            tab = (int*)malloc(stop * sizeof(int));
-            wrk = (int*)malloc(stop * sizeof(int));
-            gen[genid].gen(tab, stop);
+	    tab = (int*)malloc(stop * sizeof(int));
+	    wrk = (int*)malloc(stop * sizeof(int));
+	    gen[genid].gen(tab, stop);
 
-            /* pomiar: heapsort */
-            memcpy(wrk, tab, stop * sizeof(int));
-            mtime = clock();
-            heap_sort(wrk, stop);
-            mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / T);
+	    /* pomiar: insertion sort */
+	    memcpy(wrk, tab, stop * sizeof(int));
+	    mtime = clock();
+	    insertion_sort(wrk, stop);
+	    mtime = clock() - mtime;
+	    fprintf(file, "%ld;", mtime / T);
 	    progress();
 
-            /* pomiar: insertion sort */
-            memcpy(wrk, tab, stop * sizeof(int));
-            mtime = clock();
-            insertion_sort(wrk, stop);
-            mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / T);
+	    /* pomiar: selection sort */
+	    memcpy(wrk, tab, stop * sizeof(int));
+	    mtime = clock();
+	    selection_sort(wrk, stop);
+	    mtime = clock() - mtime;
+	    fprintf(file, "%ld;", mtime / T);
 	    progress();
 
-            /* pomiar: merge sort */
-            memcpy(wrk, tab, stop * sizeof(int));
-            mtime = clock();
-            merge_sort(tab, 0, stop - 1);
-            mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / T);
+	    /* pomiar: heapsort */
+	    memcpy(wrk, tab, stop * sizeof(int));
+	    mtime = clock();
+	    heap_sort(wrk, stop);
+	    mtime = clock() - mtime;
+	    fprintf(file, "%ld;", mtime / T);
 	    progress();
 
-            /* pomiar: selection sort */
-            memcpy(wrk, tab, stop * sizeof(int));
-            mtime = clock();
-            selection_sort(wrk, stop);
-            mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / T);
+	    /* pomiar: merge sort */
+	    memcpy(wrk, tab, stop * sizeof(int));
+	    mtime = clock();
+	    merge_sort(tab, 0, stop - 1);
+	    mtime = clock() - mtime;
+	    fprintf(file, "%ld", mtime / T);
 	    progress();
 
-            /* pomiar: quick sort */
-            memcpy(wrk, tab, stop * sizeof(int));
-            mtime = clock();
-            quick_sort(wrk, 0, stop - 1);
-            mtime = clock() - mtime;
-            fprintf(file, "%ld;", mtime / T);
-	    progress();
-
-            /* pomiar: quick sort iteracyjny */
-            memcpy(wrk, tab, stop * sizeof(int));
-            mtime = clock();
-            quick_sort_it(wrk, 0, stop - 1);
-            mtime = clock() - mtime;
-            fprintf(file, "%ld", mtime / T);
-	    progress();
-
-            fprintf(file, "\n");
-            printf("\n");
-            free(wrk);
-            free(tab);
-        }
+	    fprintf(file, "\n");
+	    fflush(file);
+	    printf("\n");
+	    free(wrk);
+	    free(tab);
+	}
     }
+    fclose(file);
 
+test2:
+    printf("Poczatek pomiaru: ");
+    scanf("%d", &start);
+    printf("Koniec pomiaru: ");
+    scanf("%d", &stop);
+    printf("Ilosc pomiarow: ");
+    scanf("%d", &n);
+    inc = (stop - start) / n;
+
+    file = fopen(OUT_FILE2, "w");
+    printf("\nTesty Quicksort\n%s\n", gen[2].name);
+    fprintf(file, "%s\n", gen[2].name);
+    fprintf(file, OUT_FILE2_HEADER);
+    for(i = 0; i < n + 1; ++i)
+    {
+	stop = start + i * inc; /* stop - rozmiar tablicy */
+	printf("%d ", stop);
+	fprintf(file, "%d;", stop);
+
+	tab = (int*)malloc(stop * sizeof(int));
+	wrk = (int*)malloc(stop * sizeof(int));
+	gen[2].gen(tab, stop);
+
+	memcpy(wrk, tab, stop * sizeof(int));
+	mtime = clock();
+	quick_sort(wrk, 0, stop - 1, partition);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
+
+	memcpy(wrk, tab, stop * sizeof(int));
+	mtime = clock();
+	quick_sort_it(wrk, 0, stop - 1);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld", mtime / T);
+	progress();
+
+	fprintf(file, "\n");
+	fflush(file);
+	printf("\n");
+	free(wrk);
+	free(tab);
+    }
+    fclose(file);
+
+test3:
+    printf("Poczatek pomiaru: ");
+    scanf("%d", &start);
+    printf("Koniec pomiaru: ");
+    scanf("%d", &stop);
+    printf("Ilosc pomiarow: ");
+    scanf("%d", &n);
+    inc = (stop - start) / n;
+    
+    file = fopen(OUT_FILE3, "w");
+    printf("\nTesty Quicksort - 2\n%s\n", gen[1].name);
+    fprintf(file, "%s\n", gen[1].name);
+    fprintf(file, OUT_FILE3_HEADER);
+    for(i = 0; i < n + 1; ++i)
+    {
+	stop = start + i * inc; /* stop - rozmiar tablicy */
+	printf("%d ", stop);
+	fprintf(file, "%d;", stop);
+
+	tab = (int*)malloc(stop * sizeof(int));
+	wrk = (int*)malloc(stop * sizeof(int));
+	gen[1].gen(tab, stop);
+
+	memcpy(wrk, tab, stop * sizeof(int));
+	mtime = clock();
+	quick_sort(wrk, 0, stop - 1, partition_right);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
+
+	memcpy(wrk, tab, stop * sizeof(int));
+	mtime = clock();
+	quick_sort(wrk, 0, stop - 1, partition_middle);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
+
+	memcpy(wrk, tab, stop * sizeof(int));
+	mtime = clock();
+	quick_sort(wrk, 0, stop - 1, partition_random);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld", mtime / T);
+	progress();
+
+	fprintf(file, "\n");
+	fflush(file);
+	printf("\n");
+	free(wrk);
+	free(tab);
+    }
     fclose(file);
 
     return 0;
