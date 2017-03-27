@@ -38,10 +38,16 @@ void gena(int* tab, int size)
     }
 }
 
+void genc(int* tab, int size)
+{
+    int i = 0;
+    for(; i < size; ++i) tab[i] = 1;
+}
+
 void gend(int* tab, int size)
 {
     int i = 0;
-    for(; i< size; ++i) tab[i] = size - i;
+    for(; i < size; ++i) tab[i] = size - i;
 }
 
 void geni(int* tab, int size)

@@ -15,7 +15,7 @@
 #include <time.h>
 
 #define T 1000 /* dzielnik mierzonego czasu */
-#define progress() printf("%ld ", mtime / T)
+#define dot() printf(".")
 
 int main (int argc, const char** argv)
 {
@@ -26,7 +26,7 @@ int main (int argc, const char** argv)
     int i, n, start, stop, inc, genid;
     clock_t mtime;
     FILE *file = fopen("wyniki.csv", "w");
-    gen_t gen[6];
+    gen_t gen[5];
 
     strcpy(gen[0].name, "[v-ksztaltny]");
     gen[0].gen = genv;
@@ -58,7 +58,7 @@ int main (int argc, const char** argv)
         printf("%s\n", gen[genid].name);
         fprintf(file, "%s\n", gen[genid].name);
         fprintf(file, "proba;heap;ins;merge;sel;quick-rec;quick-it\n");
-        for(i = 0; i < n + 1; ++i)
+        for(i = 0; i < n; ++i)
         {
             stop = start + i * inc; /* stop - rozmiar tablicy */
             printf("%d ", stop);
@@ -67,54 +67,56 @@ int main (int argc, const char** argv)
             tab = (int*)malloc(stop * sizeof(int));
             wrk = (int*)malloc(stop * sizeof(int));
             gen[genid].gen(tab, stop);
+	    print_array(tab, stop);
+	    continue;
 
             /* pomiar: heapsort */
+            dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             heap_sort(wrk, stop);
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / T);
-	    progress();
 
             /* pomiar: insertion sort */
+            dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             insertion_sort(wrk, stop);
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / T);
-	    progress();
 
             /* pomiar: merge sort */
+            dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             merge_sort(tab, 0, stop - 1);
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / T);
-	    progress();
 
             /* pomiar: selection sort */
+            dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             selection_sort(wrk, stop);
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / T);
-	    progress();
 
             /* pomiar: quick sort */
+            dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             quick_sort(wrk, 0, stop - 1);
             mtime = clock() - mtime;
             fprintf(file, "%ld;", mtime / T);
-	    progress();
 
             /* pomiar: quick sort iteracyjny */
+            dot();
             memcpy(wrk, tab, stop * sizeof(int));
             mtime = clock();
             quick_sort_it(wrk, 0, stop - 1);
             mtime = clock() - mtime;
             fprintf(file, "%ld", mtime / T);
-	    progress();
 
             fprintf(file, "\n");
             printf("\n");

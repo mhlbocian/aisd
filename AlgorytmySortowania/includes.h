@@ -19,6 +19,7 @@ typedef struct {
     void (*gen)(int*,int);
 } gen_t;
 void gena(int* tab, int size); /* a-ksztaltny */
+void genc(int* tab, int size); /* staly */
 void gend(int* tab, int size); /* malejacy */
 void geni(int* tab, int size); /* rosnacy */
 void genr(int* tab, int size); /* pseudolosowy */
