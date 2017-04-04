@@ -53,14 +53,13 @@ int main (int argc, const char** argv)
 
         genr_uniq(tab, stop);
 
-
         /* I ZADANIE */
 
         /* TWORZENIE */
         /* pomiar: lista */
         //memcpy(wrk, tab, stop * sizeof(int));
         mtime = clock();
-        list_head = create_list (tab, stop);
+        l//ist_head = create_list (tab, stop);
         mtime = clock() - mtime;
         fprintf(file, "%ld;", mtime / T);
         progress();
@@ -68,13 +67,13 @@ int main (int argc, const char** argv)
         mtime = clock();
         root = create_BST (tab, stop);
         mtime = clock() - mtime;
-        fprintf(file, "%ld\n", mtime / T);
+        fprintf(file, "%ld;", mtime / T);
         progress();
 
         /* PRZESZUKIWANIE */
         /* pomiar: lista */
         mtime = clock();
-        list_search (list_head, tab, stop);
+        //list_search (list_head, tab, stop);
         mtime = clock() - mtime;
         fprintf(file, "%ld;", mtime / T);
         progress();
@@ -82,13 +81,13 @@ int main (int argc, const char** argv)
         mtime = clock();
         BST_search (root, tab, stop);
         mtime = clock() - mtime;
-        fprintf(file, "%ld\n", mtime / T);
+        fprintf(file, "%ld;", mtime / T);
         progress();
 
         /* USUWANIE */
         /* pomiar: lista */
         mtime = clock();
-        delete_list (list_head);
+        //delete_list (list_head);
         mtime = clock() - mtime;
         fprintf(file, "%ld;", mtime / T);
         progress();
@@ -102,7 +101,7 @@ int main (int argc, const char** argv)
 
         /* II ZADANIE */
 
-        /* TWORZENIE BST */
+        /* TWORZENIE BST - TODO */
         create_BST_with_height (tab, stop, BST_max_height);
         fprintf(file, "%d;", BST_max_height);
         printf(" %d ", BST_max_height);

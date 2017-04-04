@@ -35,44 +35,80 @@ void genr_uniq(int* tab, int size)
 
     for (i = size + 1; i < 2*size; i++) tab[rand() % size] = i;
 }
-/*
+
 list_item* list_insert(list_item* current_item, int x){
-    if(!current_item) {
-		current_item = (list_item*)malloc(sizeof(list_item));
-		current_item->value = x;
-		current_item->next = NULL;
-		return(current_item);
+    if (!current_item){
+        current_item = (list_item*)malloc(sizeof(list_item));
+        current_item->value = x;
+        current_item->next = NULL;
+
+        return current_item;
+    }
+    if(current_item->value > x){
+
+        list_item * new_item;
+        new_item = (list_item*)malloc(sizeof(list_item));
+        new_item->value = x;
+        new_item->next = current_item;
+
+        return(new_item);
+
     }
 
-	if(current_item->value < x)
-	     current_node->next = insert(NULL, x);
     else {
-		if(current_node->value < x)
-			current_node->right = insert(current_node->right, x);
-	}
-}
-*/
-list_item* create_list (int tab[], int size){
-    int i = 0;
-    for (; i < size; i++){
-
+        current_item->next = list_insert(current_item->next, x);
     }
-    return NULL;//*list_head;
+
+
+    //else{
+    //    return list_insert(current_item->next, x);
+    //}
+}
+
+list_item* create_list (int tab[], int size){
+    list_item *list_head = list_insert(NULL, tab[0]);
+
+    int i = 1;
+
+    for (; i < size; i++){
+        list_insert(list_head, tab[i]);
+    }
+
+    return list_head;
+}
+
+void list_find (list_item *list_head, int x){
+    list_item *ptr;
+	ptr = list_head;
+
+    while(ptr) {
+        if (ptr->value != x)
+            ptr = ptr->next;
+        else
+            break;
+    }
+
+    printf("%d ", ptr->value);
+    return;
 }
 
 void list_search (list_item *list_head, int tab[], int size){
     int i = 0;
-    for (; i < size; i++){
 
+    for (; i < size; i++){
+        list_find(list_head, tab[i]);
     }
-    //TODO
 }
 
 void delete_list (list_item *list_head){
-    //TODO
+    while (list_head){
+        list_item * ptr = list_head->next;
+        free(list_head);
+        list_head = ptr;
+    }
 }
 
-/*
+
 node * BST_insert(node * current_node, int x) {
 	if(!current_node) {
 		current_node = (node*)malloc(sizeof(node));
@@ -82,40 +118,65 @@ node * BST_insert(node * current_node, int x) {
 		return(current_node);
 	}
 	if(current_node->value > x)
-	     current_node->left = insert(current_node->left, x);
+	     current_node->left = BST_insert(current_node->left, x);
     else {
 		if(current_node->value < x)
-			current_node->right = insert(current_node->right, x);
+			current_node->right = BST_insert(current_node->right, x);
 	}
 
 	return(current_node);
 }
-*/
+
 node* create_BST (int tab[], int size){
-    node *root;
-    root = malloc(sizeof(node));
-    root->value = tab[0];
-    root->left =NULL;
-    root->right = NULL;
-    /*
-    int i = 0;
-    for(; i < size; i++){
-        BST_insert(root, tab[i]);
+    node *root = BST_insert (NULL, tab[0]);
+    int i = 1;
+
+    for (; i < size; i++){
+        BST_insert (root, tab[i]);
     }
-    */
+
     return root;
 }
 
 void create_BST_with_height (int tab[], int size, int max_height){
+    /*Proponuje wstawic korzen normalnym insertem
+    i dodac inny wariant inserta zwracajacy wysokosc
+    i aktualizowac max_height
+    */
     //TODO
+}
+
+
+void BST_find (node *root, int x) {
+	node *ptr;
+	ptr = root;
+
+	while(ptr->value != x) {
+		if(x>ptr->value)
+		     ptr=ptr->right;
+		else
+            ptr=ptr->left;
+	}
 }
 
 void BST_search (node *root, int tab[], int size){
-    //TODO
+    int i = 0;
+
+    for (; i < size; i++){
+        BST_find(root, tab[i]);
+    }
 }
 
 void delete_BST (node *root){
-    //TODO
+    if (root->left){
+        delete_BST(root->left);
+    }
+
+    if (root->right){
+        delete_BST(root->right);
+    }
+
+    free(root);
 }
 
 /* TODO */

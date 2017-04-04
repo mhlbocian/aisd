@@ -34,13 +34,21 @@ void genr_uniq(int* tab, int size);
 
 /* funkcje list */
 list_item* create_list (int tab[], int size);
+list_item* list_insert(list_item* current_item, int x);
+
 void list_search (list_item *list_head, int tab[], int size);
+void list_find (list_item *list_head, int x);
+
 void delete_list (list_item *list_head);
 
 /* funkcje drzewa */
 node* create_BST (int tab[], int size);
-void create_BST_with_height (int tab[], int size, int max_height);
+void create_BST_with_height (int tab[], int size, int max_height); //TODO
+node * BST_insert(node * current_node, int x);
+
 void BST_search (node *root, int tab[], int size);
+void BST_find (node *root, int x) ;
+
 void delete_BST (node *root);
 
 
