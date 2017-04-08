@@ -138,12 +138,39 @@ node* create_BST (int tab[], int size){
     return root;
 }
 
-void create_BST_with_height (int tab[], int size, int max_height){
-    /*Proponuje wstawic korzen normalnym insertem
-    i dodac inny wariant inserta zwracajacy wysokosc
-    i aktualizowac max_height
-    */
-    //TODO
+node * BST_insert_with_height(node * current_node, int x, int *height) {
+	if(!current_node) {
+		current_node = (node*)malloc(sizeof(node));
+		current_node->value = x;
+		current_node->left = NULL;
+		current_node->right = NULL;
+		return(current_node);
+	}
+    if(current_node->value > x){
+        (*height)++;
+        current_node->left = BST_insert_with_height(current_node->left, x, height);
+	}
+	else {
+        (*height)++;
+		if(current_node->value < x)
+			current_node->right = BST_insert_with_height(current_node->right, x, height);
+	}
+
+	return(current_node);
+}
+
+void create_BST_with_height(int tab[], int size, int *max_height){
+    *max_height = 0;
+
+    node *root = BST_insert (NULL, tab[0]);
+    int i = 1;
+
+    for (; i < size; i++){
+        int height = 0;
+        BST_insert_with_height(root, tab[i], &height);
+        if(height > (*max_height))
+            *max_height = height;
+    }
 }
 
 
@@ -180,6 +207,6 @@ void delete_BST (node *root){
 }
 
 /* TODO */
-void create_AVL_tree (node *BST_root, /*...*/ int max_height){
+void create_AVL_tree (node *BST_root, /*...*/ int *max_height){
     //TODO
 }

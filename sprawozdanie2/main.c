@@ -49,7 +49,6 @@ int main (int argc, const char** argv)
         fprintf(file, "%d;", stop);
 
         tab = (int*)malloc(stop * sizeof(int));
-        //wrk = (int*)malloc(stop * sizeof(int));
 
         genr_uniq(tab, stop);
 
@@ -57,9 +56,8 @@ int main (int argc, const char** argv)
 
         /* TWORZENIE */
         /* pomiar: lista */
-        //memcpy(wrk, tab, stop * sizeof(int));
         mtime = clock();
-        l//ist_head = create_list (tab, stop);
+        //list_head = create_list (tab, stop);
         mtime = clock() - mtime;
         fprintf(file, "%ld;", mtime / T);
         progress();
@@ -101,13 +99,13 @@ int main (int argc, const char** argv)
 
         /* II ZADANIE */
 
-        /* TWORZENIE BST - TODO */
-        create_BST_with_height (tab, stop, BST_max_height);
+        /* TWORZENIE BST */
+        create_BST_with_height (tab, stop, &BST_max_height);
         fprintf(file, "%d;", BST_max_height);
         printf(" %d ", BST_max_height);
 
         /* TWORZENIE AVL - TODO */
-        create_AVL_tree (root, /*...*/ AVL_tree_max_height);
+        //create_AVL_tree (root, /*...*/ &AVL_tree_max_height);
         fprintf(file, "%d", AVL_tree_max_height);
         printf(" %d ", AVL_tree_max_height);
 
