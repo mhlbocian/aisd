@@ -12,7 +12,8 @@
 typedef struct item list_item;
 typedef struct tree_node node;
 
-/* funkcje tablic */
+/* funkcje tablic i list */
+void print_list(list_item* head);
 void print_array(int tab[], int size);
 void swap_element(int tab[], int indexA, int indexB);
 
@@ -24,7 +25,6 @@ struct item{
 
 struct tree_node{
     int value;
-    //node *parent = NULL;
     node *left;
     node *right;
 };
