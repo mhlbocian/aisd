@@ -106,8 +106,8 @@ int main (int argc, const char** argv)
         fprintf(file, "%d;", BST_max_height);
         printf("%d ", BST_max_height);
 
-        /* TWORZENIE AVL - TODO */
-        //create_AVL_tree (root, /*...*/ &AVL_tree_max_height);
+        /* TWORZENIE AVL */
+        create_AVL_tree (root, &AVL_tree_max_height);
         fprintf(file, "%d", AVL_tree_max_height);
         printf("%d ", AVL_tree_max_height);
 
