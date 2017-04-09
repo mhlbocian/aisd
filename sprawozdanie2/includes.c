@@ -223,7 +223,7 @@ void create_AVL_tree (node* BST_root, int* max_height) {
     node* avl = NULL;
     in_order_to_array(BST_root, &tab, &len);
     avl = build_avl(tab, 0, len - 1, max_height);
-    /* ile z roota mozna przejsc w lewo - taka wysokosc */
+    *max_height = 1; /* jezeli sam root wliczajac */
     while (avl->left) {
 	(*max_height)++;
 	avl = avl->left;
