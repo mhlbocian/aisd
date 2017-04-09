@@ -208,13 +208,13 @@ void in_order_to_array(node* root, int** tab, int* size)
     if (root->right) in_order_to_array(root->right, tab, size);
 }
 
-node* build_avl(int* tab, int start, int stop, int* max_height) {
+node* build_avl(int* tab, int start, int stop) {
     int mid = (start + stop) / 2;
     if (start > stop) return NULL;
     node* root = (node*)malloc(sizeof(node));
     root->value = tab[mid];
-    root->left = build_avl(tab, start, mid - 1, max_height);
-    root->right = build_avl(tab, mid + 1, stop, max_height);
+    root->left = build_avl(tab, start, mid - 1);
+    root->right = build_avl(tab, mid + 1, stop);
     return root;
 }
 
@@ -222,7 +222,7 @@ void create_AVL_tree (node* BST_root, int* max_height) {
     int* tab = NULL, len = 0;
     node* avl = NULL;
     in_order_to_array(BST_root, &tab, &len);
-    avl = build_avl(tab, 0, len - 1, max_height);
+    avl = build_avl(tab, 0, len - 1);
     *max_height = 1; /* jezeli sam root wliczajac */
     while (avl->left) {
 	(*max_height)++;

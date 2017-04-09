@@ -50,6 +50,6 @@ void delete_BST (node *root);
 
 /* AVL */
 void in_order_to_array(node* root, int** tab, int* size);
-node* build_avl(int* tab, int start, int stop, int* max_height);
+node* build_avl(int* tab, int start, int stop);
 void create_AVL_tree (node *BST_root, int *max_height);
 #endif

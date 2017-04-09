@@ -19,7 +19,7 @@
 #else
     #define T 1
 #endif
-#define progress() printf("%ld ", mtime)
+#define progress() printf("%ld ", mtime / T)
 
 int main (int argc, const char** argv)
 {
