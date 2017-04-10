@@ -23,7 +23,15 @@
 
 int main (int argc, const char** argv)
 {
+#ifdef __unix__
+    unsigned int seed;
+    FILE* urandom = fopen("/dev/urandom", "r");
+    fread(&seed, sizeof(int), 1, urandom);
+    fclose(urandom);
+    srand(seed);
+#else
     srand(time(NULL));
+#endif
     setbuf(stdout, NULL);
 
     list_item *list_head = NULL;
@@ -33,7 +41,6 @@ int main (int argc, const char** argv)
     int BST_height, AVL_height;
     clock_t mtime;
     FILE *file = fopen("wyniki.csv", "w");
-
 
     printf("Poczatek pomiaru: ");
     scanf("%d", &start);
