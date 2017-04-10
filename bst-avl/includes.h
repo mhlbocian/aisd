@@ -9,31 +9,25 @@
  */
 #ifndef INCLUDES_H
 #define INCLUDES_H
-
 typedef struct item list_item;
 typedef struct tree_node node;
-
 struct item{
     int value;
     list_item *next;
 };
-
 struct tree_node{
     int value;
     node *left;
     node *right;
 };
-
 /*generator nieuporzadkowanej tablicy bez powtorzen*/
 void genr_uniq(int* tab, int size);
-
 /* funkcje list */
 list_item* create_list (int tab[], int size);
 list_item* list_insert(list_item* current_item, int x);
 void delete_list (list_item *list_head);
 void list_search (list_item *list_head, int tab[], int size);
 void list_find (list_item *list_head, int x);
-
 /* funkcje drzewa */
 node* create_BST (int tab[], int size);
 node * BST_insert(node * current_node, int x);
