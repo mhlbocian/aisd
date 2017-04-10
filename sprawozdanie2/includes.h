@@ -9,15 +9,10 @@
  */
 #ifndef INCLUDES_H
 #define INCLUDES_H
+
 typedef struct item list_item;
 typedef struct tree_node node;
 
-/* funkcje tablic i list */
-void print_list(list_item* head);
-void print_array(int tab[], int size);
-void swap_element(int tab[], int indexA, int indexB);
-
-/* lista jednokierunkowa */
 struct item{
     int value;
     list_item *next;
@@ -35,21 +30,19 @@ void genr_uniq(int* tab, int size);
 /* funkcje list */
 list_item* create_list (int tab[], int size);
 list_item* list_insert(list_item* current_item, int x);
+void delete_list (list_item *list_head);
 void list_search (list_item *list_head, int tab[], int size);
 void list_find (list_item *list_head, int x);
-void delete_list (list_item *list_head);
 
 /* funkcje drzewa */
 node* create_BST (int tab[], int size);
-void create_BST_with_height (int tab[], int size, int *max_height);
 node * BST_insert(node * current_node, int x);
-node * BST_insert_with_height (node * current_node, int x, int *height);
+void BST_find (node *root, int x);
 void BST_search (node *root, int tab[], int size);
-void BST_find (node *root, int x) ;
-void delete_BST (node *root);
-
+void BST_to_array(node* root, int** tab, int* size);
+void tree_height(node* node, int* global, int local);
+void delete_tree (node *root);
 /* AVL */
-void in_order_to_array(node* root, int** tab, int* size);
 node* build_avl(int* tab, int start, int stop);
-void create_AVL_tree (node *BST_root, int *max_height);
+node* create_AVL(node *BST_root);
 #endif

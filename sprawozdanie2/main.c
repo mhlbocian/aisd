@@ -15,9 +15,9 @@
 #include <time.h>
 
 #ifdef __unix__
-    #define T 1000 /* dzielnik mierzonego czasu */
+#define T 1000 /* dzielnik mierzonego czasu */
 #else
-    #define T 1
+#define T 1
 #endif
 #define progress() printf("%ld ", mtime / T)
 
@@ -27,10 +27,10 @@ int main (int argc, const char** argv)
     setbuf(stdout, NULL);
 
     list_item *list_head = NULL;
-    node *root = NULL;
+    node *bst = NULL, *avl = NULL;
     int *tab = NULL;
     int i, n, start, stop, inc;
-    int BST_max_height, AVL_tree_max_height;
+    int BST_height, AVL_height;
     clock_t mtime;
     FILE *file = fopen("wyniki.csv", "w");
 
@@ -47,73 +47,75 @@ int main (int argc, const char** argv)
 
     for(i = 0; i < n + 1; ++i)
     {
-	BST_max_height = 0;
-	AVL_tree_max_height = 0;
-        stop = start + i * inc; /* stop - rozmiar tablicy */
-        printf("%d ", stop);
-        fprintf(file, "%d;", stop);
+	BST_height = 1;
+	AVL_height = 1;
+	stop = start + i * inc;
+	printf("%d ", stop);
+	fprintf(file, "%d;", stop);
 
-        tab = (int*)malloc(stop * sizeof(int));
-        genr_uniq(tab, stop);
+	tab = (int*)malloc(stop * sizeof(int));
+	genr_uniq(tab, stop);
 
-        /* I ZADANIE */
-        /* TWORZENIE */
-        /* pomiar: lista */
-        mtime = clock();
-        list_head = create_list (tab, stop);
-        mtime = clock() - mtime;
-        fprintf(file, "%ld;", mtime / T);
-        progress();
-        /* pomiar: BST */
-        mtime = clock();
-        root = create_BST (tab, stop);
-        mtime = clock() - mtime;
-        fprintf(file, "%ld;", mtime / T);
-        progress();
+	/* TWORZENIE */
+	/* pomiar: lista */
+	mtime = clock();
+	list_head = create_list (tab, stop);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
+	/* pomiar: BST */
+	mtime = clock();
+	bst = create_BST (tab, stop);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
 
-        /* PRZESZUKIWANIE */
-        /* pomiar: lista */
-        mtime = clock();
-        list_search (list_head, tab, stop);
-        mtime = clock() - mtime;
-        fprintf(file, "%ld;", mtime / T);
-        progress();
-        /* pomiar: BST */
-        mtime = clock();
-        BST_search (root, tab, stop);
-        mtime = clock() - mtime;
-        fprintf(file, "%ld;", mtime / T);
-        progress();
+	/* PRZESZUKIWANIE */
+	/* pomiar: lista */
+	mtime = clock();
+	list_search (list_head, tab, stop);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
+	/* pomiar: BST */
+	mtime = clock();
+	BST_search (bst, tab, stop);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
 
-        /* USUWANIE */
-        /* pomiar: lista */
-        mtime = clock();
-        delete_list (list_head);
-        mtime = clock() - mtime;
-        fprintf(file, "%ld;", mtime / T);
-        progress();
-        /* pomiar: BST */
-        mtime = clock();
-        delete_BST (root);
-        mtime = clock() - mtime;
-        fprintf(file, "%ld;", mtime / T);
-        progress();
+	/* USUWANIE */
+	/* pomiar: lista */
+	mtime = clock();
+	delete_list (list_head);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
+	/* pomiar: BST */
+	mtime = clock();
+	delete_tree (bst);
+	mtime = clock() - mtime;
+	fprintf(file, "%ld;", mtime / T);
+	progress();
 
+	/* TWORZENIE BST */
+	bst = create_BST(tab, stop);
+	tree_height(bst, &BST_height, 1);
+	fprintf(file, "%d;", BST_height);
+	printf("%d ", BST_height);
 
-        /* II ZADANIE */
-        /* TWORZENIE BST */
-        create_BST_with_height (tab, stop, &BST_max_height);
-        fprintf(file, "%d;", BST_max_height);
-        printf("%d ", BST_max_height);
+	/* TWORZENIE AVL */
+	avl = create_AVL(bst);
+	tree_height(avl, &AVL_height, 1);
+	fprintf(file, "%d", AVL_height);
+	printf("%d ", AVL_height);
 
-        /* TWORZENIE AVL */
-        create_AVL_tree (root, &AVL_tree_max_height);
-        fprintf(file, "%d", AVL_tree_max_height);
-        printf("%d ", AVL_tree_max_height);
+	fprintf(file, "\n");
+	printf("\n");
 
-        fprintf(file, "\n");
-        printf("\n");
-        free(tab);
+	delete_tree(bst);
+	delete_tree(avl);
+	free(tab);
     }
     fclose(file);
 
