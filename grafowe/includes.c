@@ -12,6 +12,24 @@
 #include <stdlib.h>
 #include <time.h>
 
+int** createMatrix(int m, int n){
+    int i = 0;
+    int** matrix = (int**)malloc(m * sizeof(int*));
+    
+    for (; i < m; ++i){
+	matrix[i] = (int*)malloc(n * sizeof(int));
+    }
+
+    return matrix;
+}
+
+void freeMatrix(int** matrix, int m, int n){
+    int i = 0;
+    
+    for (; i < m; ++i){
+	free(matrix[i]);
+    }
+}
 
 void list_insert(item* current_item, int x){
     if (!current_item){

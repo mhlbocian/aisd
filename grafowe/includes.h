@@ -26,6 +26,9 @@ struct tree_node{
     node *right;
 };
 
+int** createMatrix(int m, int n);
+void freeMatrix(int** matrix, int m, int n);
+
 /*generowanie DAGu*/
 void genDAGmatrix(int **tab, int rozm); //rozm - n - jeden wymiar!
 void genDAGlist(item** listArray, int **tab, int rozm);
