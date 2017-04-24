@@ -31,15 +31,16 @@ void freeMatrix(int** matrix, int m, int n){
     }
 }
 
-void list_insert(item* current_item, int x){
+void list_insert(item* current_item, int succ, int val){
     if (!current_item){
         current_item = (item*)malloc(sizeof(item));
-        current_item->succNum = x;
+        current_item->succNum = succ;
+        current_item->value = val;
         current_item->next = NULL;
     }
 
     else {
-        list_insert(current_item->next, x);
+        list_insert(current_item->next, succ, val);
     }
 }
 
@@ -84,7 +85,8 @@ void genDAGlist(item** listArray, int **tab, int rozm){
         for (j = i + 1; j < rozm; j++){
             if(tab[i][j]){
                 // TODO: sprawdziæ, czy dzia³a jako funkcja typu void
-                list_insert(listArray[i], j);
+                list_insert(&listArray[i], j, 0);
+
             }
         }
     }
@@ -98,7 +100,7 @@ item* topologicalSortMatrix(int* tab, int rozm){
 
 void genGraphMatrix(int **tab, float nasycenie, int rozm){
 
-    int i, j;
+    int i, j, val;
     for (i = 0; i < rozm; i++){
         for (j = 0; j < rozm; j++){
             tab[i][j] = 0;
@@ -109,10 +111,12 @@ void genGraphMatrix(int **tab, float nasycenie, int rozm){
 
     while (numOfVertices){
         i = rand() % rozm;
-        i = rand() % rozm;
+        j = rand() % rozm;
 
         if(tab[i][j] == 0){
-            tab[i][j] = rand() % 1000 + 1;
+            val = rand() % 1000 + 1;
+            tab[i][j] = val;
+            tab[j][i] = val;
             numOfVertices--;
         }
     }
@@ -128,7 +132,10 @@ void genGraphList(item** listArray, int **tab, int rozm){
     for (i = 0; i < rozm; i++){
         for (j = i + 1; j < rozm; j++){
             if(tab[i][j]){
-                //TODO: wstawienie z uwzglednieniem wagi; pytanie, czy wstawiac symetrycznie
+                list_insert(&listArray[i], j, tab[i][j]);
+                list_insert(&listArray[j], i, tab[i][j]);
+                tab[i][j] = 0;
+                tab[j][i] = 0;
             }
         }
     }
