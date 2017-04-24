@@ -35,15 +35,29 @@ void deleteMatrix(int** matrix, int n){
 	}
 }
 
-void list_insert(List*& item, int value, int num){
+void listInsert(List*& item, int value, int num){
 	if (!item){
         item = new List;
         item->num = num;
         item->value = value;
         item->next = NULL;
     } else {
-        list_insert(item->next, value, num);
+        listInsert(item->next, value, num);
     }
+}
+
+void listArrayDelete(List** list, int size){
+	List* temp;
+	
+	for (int i = 0; i < size; i++){
+		while (list[i]){
+			temp = list[i];
+			list[i] = list[i]->next;
+			delete temp;
+		}
+	}
+	
+	delete list;
 }
 
 void genDAGmatrix(int** tab, int rozm){
@@ -60,12 +74,11 @@ void genDAGmatrix(int** tab, int rozm){
         i = rand() % rozm;
         j = rand() % (rozm - i) + i;
 
-        if(tab[i][j] == 0){
+        if(tab[i][j] == 0 && i != j){
             tab[i][j] = 1;
             numOfVertices--;
         }
     }
-    //2 - ew. przemieszanie
 }
 
 
@@ -79,7 +92,7 @@ void genDAGlist(List** listArray, int **tab, int rozm){
     for (i = 0; i < rozm; i++){
         for (j = i + 1; j < rozm; j++){
             if(tab[i][j]){
-                list_insert(listArray[i], 0, j);
+                listInsert(listArray[i], 0, j);
             }
         }
     }
@@ -122,8 +135,8 @@ void genGraphList(List** listArray, int **tab, int rozm){
     for (i = 0; i < rozm; i++){
         for (j = i + 1; j < rozm; j++){
             if(tab[i][j]){
-                list_insert(listArray[i], j, tab[i][j]);
-                list_insert(listArray[j], i, tab[i][j]);
+                listInsert(listArray[i], j, tab[i][j]);
+                listInsert(listArray[j], i, tab[i][j]);
                 tab[i][j] = 0;
                 tab[j][i] = 0;
             }
@@ -132,7 +145,11 @@ void genGraphList(List** listArray, int **tab, int rozm){
 }
 
 int main(void){
+	srand(time(NULL));
+	
 	int i, inc, n, start, stop;
+	int** matrix;
+	List** list;
 	
 	cout<<"Poczatek pomiaru: ";
 	cin>>start;
@@ -142,10 +159,19 @@ int main(void){
 	cin>>n;
 	inc = (stop - start) / n;
 	
-	for(i = 0; i < n + 1; i++){
+	for(i = 0; i < n; i++){
 		// stop to aktualna proba
 		stop = start + i * inc;
+		list = new List*[stop];
 		
+		cout<<stop<<":";
+		matrix = createMatrix(stop);
+		genDAGmatrix(matrix, stop);
+		genDAGlist(list, matrix, stop);
+		
+		deleteMatrix(matrix, stop);
+		listArrayDelete(list, stop);
+		cout<<endl;
 	}
 	
 	return 0;
