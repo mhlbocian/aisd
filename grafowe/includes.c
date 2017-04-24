@@ -15,8 +15,8 @@
 
 void list_insert(item* current_item, int x){
     if (!current_item){
-        current_item = (list_item*)malloc(sizeof(list_item));
-        current_item->value = x;
+        current_item = (item*)malloc(sizeof(item));
+        current_item->succNum = x;
         current_item->next = NULL;
     }
 
@@ -26,7 +26,7 @@ void list_insert(item* current_item, int x){
 }
 
 /*generowanie DAGu*/
-void genDAGmatrix(int *tab, int rozm){
+void genDAGmatrix(int **tab, int rozm){
 
     //0 - zerowanie tablicy
     int i, j;
@@ -54,7 +54,8 @@ void genDAGmatrix(int *tab, int rozm){
 
 }
 
-void genDAGlist((item*)* listArray, int *tab, int rozm){
+
+void genDAGlist(item** listArray, int **tab, int rozm){
     int i, j;
 
     for (i = 0; i < rozm; i++){
@@ -72,7 +73,45 @@ void genDAGlist((item*)* listArray, int *tab, int rozm){
 }
 
 item* topologicalSortMatrix(int* tab, int rozm){
+    return NULL;
+}
 
 
 
+void genGraphMatrix(int **tab, float nasycenie, int rozm){
+
+    int i, j;
+    for (i = 0; i < rozm; i++){
+        for (j = 0; j < rozm; j++){
+            tab[i][j] = 0;
+        }
+    }
+
+    int numOfVertices = rozm * (rozm - 1) * 0.5 * nasycenie;
+
+    while (numOfVertices){
+        i = rand() % rozm;
+        i = rand() % rozm;
+
+        if(tab[i][j] == 0){
+            tab[i][j] = rand() % 1000 + 1;
+            numOfVertices--;
+        }
+    }
+}
+
+void genGraphList(item** listArray, int **tab, int rozm){
+    int i, j;
+
+    for (i = 0; i < rozm; i++){
+        listArray[i] = NULL;
+    }
+
+    for (i = 0; i < rozm; i++){
+        for (j = i + 1; j < rozm; j++){
+            if(tab[i][j]){
+                //TODO: wstawienie z uwzglednieniem wagi; pytanie, czy wstawiac symetrycznie
+            }
+        }
+    }
 }

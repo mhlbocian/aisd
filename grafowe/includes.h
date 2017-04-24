@@ -11,23 +11,27 @@
 #ifndef INCLUDES_H
 #define INCLUDES_H
 
-typedef struct{
-    int value;
-    list_item *next;
-} item;
+typedef struct list_item item;
+typedef struct tree_node node;
 
-typedef struct{
+struct list_item {
+    int succNum;
+    int value;
+    item *next;
+};
+
+struct tree_node{
     int value;
     node *left;
     node *right;
-} node;
+};
 
 /*generowanie DAGu*/
-void genDAGmatrix(int *tab, int rozm); //rozm - n - jeden wymiar!
-void genDAGlist((item*)* listArray, int *tab, int rozm);
+void genDAGmatrix(int **tab, int rozm); //rozm - n - jeden wymiar!
+void genDAGlist(item** listArray, int **tab, int rozm);
 
 /*generowanie grafu nieskierowanego z wagami*/
-//void genGraphMatrix(tablica, int nasycenie, int rozm);
+void genGraphMatrix(int **tab, float nasycenie, int rozm); //nasycenie - wywolania 0.3 i 0.7!
 //void genGraphList(tablica z wsk do list, tablica z grafem, int rozm);
 
 /*sortowanie topologiczne*/

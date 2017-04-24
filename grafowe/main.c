@@ -52,7 +52,7 @@ int main (int argc, const char** argv)
 
     }
 
-    free(tab);
+    //free(tab);
 
     return 0;
 }
