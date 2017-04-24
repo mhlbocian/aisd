@@ -66,7 +66,7 @@ void listArrayDelete(List** list, int size) {
         }
     }
 
-    delete list;
+    delete[] list;
 }
 
 void genDAGmatrix(int** tab, int rozm) {
@@ -168,12 +168,12 @@ slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) {
     return newElem;
 }
 
-slist DFSVisitList(int *color, List* tab[], int i, slist element, int rozm){ // TODO: ze tablica 2D
+slist DFSVisitList(int *color, List* tab[], int i, slist element, int rozm) { // TODO: ze tablica 2D
     //wierzcholek odwiedzony
     color[i] = gray;
 
-    while (tab[i] != NULL){
-        if(color[tab[i]->num] == white){
+    while (tab[i] != NULL) {
+        if(color[tab[i]->num] == white) {
             DFSVisitList (color, tab, tab[i]->num, element, rozm);
         }
         tab[i] = (tab[i])->next;
@@ -201,15 +201,15 @@ slist topologicalSortMatrix (int *colors, int **tab, int rozm) {
     return headTopological;
 }
 
-slist topologicalSortList(int *colors, List **tab, int rozm){
+slist topologicalSortList(int *colors, List **tab, int rozm) {
     slist headTopological = {-1, NULL};
 
-    for (int i = 0; i < rozm; i++){
+    for (int i = 0; i < rozm; i++) {
         colors[i] = white;
     }
 
-    for (int i = 0; i < rozm; i++){
-        if (colors[i] == white){
+    for (int i = 0; i < rozm; i++) {
+        if (colors[i] == white) {
             headTopological = DFSVisitList(colors, tab, i, headTopological, rozm);
         }
     }
@@ -220,8 +220,10 @@ int main(void) {
     srand(time(NULL));
 
     int i, inc, n, start, stop;
+    int* colors;
     int** matrix;
     List** list;
+    clock_t mtime;
 
     cout<<"Poczatek pomiaru: ";
     cin>>start;
@@ -231,18 +233,31 @@ int main(void) {
     cin>>n;
     inc = (stop - start) / n;
 
+    cout<<"Proba;Macierz;Lista"<<endl;
     for(i = 0; i < n; i++) {
         // stop to aktualna proba
         stop = start + i * inc;
         list = new List*[stop];
+        colors = new int[stop];
 
-        cout<<stop<<":";
+        cout<<stop<<";";
         matrix = createMatrix(stop);
         genDAGmatrix(matrix, stop);
         genDAGlist(list, matrix, stop);
 
+        mtime = clock();
+        topologicalSortMatrix(colors, matrix, stop);
+        mtime = clock() - mtime;
+        cout<<mtime<<";";
+
+        mtime = clock();
+        topologicalSortList(colors, list, stop);
+        mtime = clock() - mtime;
+        cout<<mtime;
+
         deleteMatrix(matrix, stop);
         listArrayDelete(list, stop);
+        delete[] colors;
         cout<<endl;
     }
 
