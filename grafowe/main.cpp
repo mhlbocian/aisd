@@ -15,7 +15,7 @@ using namespace std;
 
 struct List{
 	int value;
-	int nedge;
+	int num;
 	List* next;
 };
 
@@ -35,14 +35,14 @@ void deleteMatrix(int** matrix, int n){
 	}
 }
 
-void list_insert(List*& item, int value, int nedge){
+void list_insert(List*& item, int value, int num){
 	if (!item){
         item = new List;
-        item->nedge = nedge;
+        item->num = num;
         item->value = value;
         item->next = NULL;
     } else {
-        list_insert(item->next, value, nedge);
+        list_insert(item->next, value, num);
     }
 }
 
@@ -89,18 +89,15 @@ List* topologicalSortMatrix(int* tab, int rozm){
     return NULL;
 }
 
-
-
 void genGraphMatrix(int **tab, float nasycenie, int rozm){
     int i, j, val;
+    int numOfVertices = rozm * (rozm - 1) * 0.5 * nasycenie;
     
     for (i = 0; i < rozm; i++){
         for (j = 0; j < rozm; j++){
             tab[i][j] = 0;
         }
     }
-
-    int numOfVertices = rozm * (rozm - 1) * 0.5 * nasycenie;
 
     while (numOfVertices){
         i = rand() % rozm;
@@ -135,5 +132,21 @@ void genGraphList(List** listArray, int **tab, int rozm){
 }
 
 int main(void){
+	int i, inc, n, start, stop;
+	
+	cout<<"Poczatek pomiaru: ";
+	cin>>start;
+	cout<<"Koniec pomiaru: ";
+	cin>>stop;
+	cout<<"Ilosc krokow: ";
+	cin>>n;
+	inc = (stop - start) / n;
+	
+	for(i = 0; i < n + 1; i++){
+		// stop to aktualna proba
+		stop = start + i * inc;
+		
+	}
+	
 	return 0;
 }
