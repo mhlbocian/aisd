@@ -18,8 +18,8 @@
 
 int main (int argc, const char** argv)
 {
-    int *tab = NULL;
     int i, n, start, stop, inc;
+    srand(time(NULL));
 
     printf("Poczatek pomiaru: ");
     scanf("%d", &start);
@@ -29,13 +29,26 @@ int main (int argc, const char** argv)
     scanf("%d", &n);
     inc = (stop - start) / n;
 
+    // TODO: zrobic tablice tab intow stop*stop
+    /*
+    int** tab2 = (int**)malloc(stop*sizeof(int*));
+    for(i=0; i<stop; ++i){
+        tab2[i] = (int*)malloc(stop*sizeof(int));
+    }
 
-    tab = (int*) malloc(sizeof(int) * stop);
+    */
+
+    // TODO:  tablice ptrItem wsk do item dlugosci stop
+    //item** ptrItem = (item**)malloc(stop*sizeof(item*));
 
     for(i = 0; i < n + 1; ++i){
 
         stop = start + i * inc;
         printf("%d ", stop);
+
+        // TODO: wrk - kopia tab
+
+        //
 
     }
 

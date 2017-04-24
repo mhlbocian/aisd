@@ -23,8 +23,8 @@ typedef struct{
 } node;
 
 /*generowanie DAGu*/
-//void genDAGmatrix(tablica, int rozm);
-//void genDAGlist(tablica z wsk do list, tablica z grafem, int rozm);
+void genDAGmatrix(int *tab, int rozm); //rozm - n - jeden wymiar!
+void genDAGlist((item*)* listArray, int *tab, int rozm);
 
 /*generowanie grafu nieskierowanego z wagami*/
 //void genGraphMatrix(tablica, int nasycenie, int rozm);
