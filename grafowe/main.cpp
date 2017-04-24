@@ -107,10 +107,6 @@ void genDAGlist(List** listArray, int **tab, int rozm) {
     }
 }
 
-List* topologicalSortMatrix(int* tab, int rozm) {
-    return NULL;
-}
-
 void genGraphMatrix(int **tab, float nasycenie, int rozm) {
     int i, j, val;
     int numOfVertices = rozm * (rozm - 1) * 0.5 * nasycenie;
@@ -153,8 +149,7 @@ void genGraphList(List** listArray, int **tab, int rozm) {
     }
 }
 
-
-slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) { // TODO: ze tablica 2D
+slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) {
     //wierzcholek odwiedzony
     color[i] = gray;
 
@@ -173,7 +168,25 @@ slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) { // TODO:
     return newElem;
 }
 
-slist topologicalSortMatrix (int *colors, int **tab, int rozm) { // TODO: ze tablica 2D
+slist DFSVisitList(int *color, List* tab[], int i, slist element, int rozm){ // TODO: ze tablica 2D
+    //wierzcholek odwiedzony
+    color[i] = gray;
+
+    while (tab[i] != NULL){
+        if(color[tab[i]->num] == white){
+            DFSVisitList (color, tab, tab[i]->num, element, rozm);
+        }
+        tab[i] = (tab[i])->next;
+    }
+    //wierzcholek przetworzony
+    color[i] = black;
+
+    //tworzymy liste wynikowa, posortowana topologicznie
+    slist newElem = {i, &element};
+    return newElem;
+}
+
+slist topologicalSortMatrix (int *colors, int **tab, int rozm) {
     slist headTopological = {-1, NULL};
 
     for (int i = 0; i < rozm; i++) {
@@ -188,7 +201,20 @@ slist topologicalSortMatrix (int *colors, int **tab, int rozm) { // TODO: ze tab
     return headTopological;
 }
 
+slist topologicalSortList(int *colors, List **tab, int rozm){
+    slist headTopological = {-1, NULL};
 
+    for (int i = 0; i < rozm; i++){
+        colors[i] = white;
+    }
+
+    for (int i = 0; i < rozm; i++){
+        if (colors[i] == white){
+            headTopological = DFSVisitList(colors, tab, i, headTopological, rozm);
+        }
+    }
+    return headTopological;
+}
 
 int main(void) {
     srand(time(NULL));
