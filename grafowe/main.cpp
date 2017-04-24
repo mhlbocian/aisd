@@ -17,35 +17,35 @@
 
 using namespace std;
 
-struct List{
-	int value;
-	int num;
-	List* next;
+struct List {
+    int value;
+    int num;
+    List* next;
 };
 
-struct slist{ //do listy topologicznej
+struct slist { //do listy topologicznej
     int num;
     slist *next;
 };
 
-int** createMatrix(int n){
-	int** matrix = new int*[n];
+int** createMatrix(int n) {
+    int** matrix = new int*[n];
 
-	for (int i = 0; i < n; i++){
-		matrix[i] = new int[n];
-	}
+    for (int i = 0; i < n; i++) {
+        matrix[i] = new int[n];
+    }
 
-	return matrix;
+    return matrix;
 }
 
-void deleteMatrix(int** matrix, int n){
-	for (int i = 0; i < n; i++){
-		delete matrix[i];
-	}
+void deleteMatrix(int** matrix, int n) {
+    for (int i = 0; i < n; i++) {
+        delete matrix[i];
+    }
 }
 
-void listInsert(List*& item, int value, int num){
-	if (!item){
+void listInsert(List*& item, int value, int num) {
+    if (!item) {
         item = new List;
         item->num = num;
         item->value = value;
@@ -55,35 +55,35 @@ void listInsert(List*& item, int value, int num){
     }
 }
 
-void listArrayDelete(List** list, int size){
-	List* temp;
+void listArrayDelete(List** list, int size) {
+    List* temp;
 
-	for (int i = 0; i < size; i++){
-		while (list[i]){
-			temp = list[i];
-			list[i] = list[i]->next;
-			delete temp;
-		}
-	}
+    for (int i = 0; i < size; i++) {
+        while (list[i]) {
+            temp = list[i];
+            list[i] = list[i]->next;
+            delete temp;
+        }
+    }
 
-	delete list;
+    delete list;
 }
 
-void genDAGmatrix(int** tab, int rozm){
+void genDAGmatrix(int** tab, int rozm) {
     int i, j;
     int numOfVertices = rozm * (rozm - 1) * 0.5 * 0.6;
 
-    for (i = 0; i < rozm; i++){
-        for (j = 0; j < rozm; j++){
+    for (i = 0; i < rozm; i++) {
+        for (j = 0; j < rozm; j++) {
             tab[i][j] = 0;
         }
     }
 
-    while (numOfVertices){
+    while (numOfVertices) {
         i = rand() % rozm;
         j = rand() % (rozm - i) + i;
 
-        if(tab[i][j] == 0 && i != j){
+        if(tab[i][j] == 0 && i != j) {
             tab[i][j] = 1;
             numOfVertices--;
         }
@@ -91,41 +91,41 @@ void genDAGmatrix(int** tab, int rozm){
 }
 
 
-void genDAGlist(List** listArray, int **tab, int rozm){
+void genDAGlist(List** listArray, int **tab, int rozm) {
     int i, j;
 
-    for (i = 0; i < rozm; i++){
+    for (i = 0; i < rozm; i++) {
         listArray[i] = NULL;
     }
 
-    for (i = 0; i < rozm; i++){
-        for (j = i + 1; j < rozm; j++){
-            if(tab[i][j]){
+    for (i = 0; i < rozm; i++) {
+        for (j = i + 1; j < rozm; j++) {
+            if(tab[i][j]) {
                 listInsert(listArray[i], 0, j);
             }
         }
     }
 }
 
-List* topologicalSortMatrix(int* tab, int rozm){
+List* topologicalSortMatrix(int* tab, int rozm) {
     return NULL;
 }
 
-void genGraphMatrix(int **tab, float nasycenie, int rozm){
+void genGraphMatrix(int **tab, float nasycenie, int rozm) {
     int i, j, val;
     int numOfVertices = rozm * (rozm - 1) * 0.5 * nasycenie;
 
-    for (i = 0; i < rozm; i++){
-        for (j = 0; j < rozm; j++){
+    for (i = 0; i < rozm; i++) {
+        for (j = 0; j < rozm; j++) {
             tab[i][j] = 0;
         }
     }
 
-    while (numOfVertices){
+    while (numOfVertices) {
         i = rand() % rozm;
         j = rand() % rozm;
 
-        if(tab[i][j] == 0){
+        if(tab[i][j] == 0) {
             val = rand() % 1000 + 1;
             tab[i][j] = val;
             tab[j][i] = val;
@@ -134,16 +134,16 @@ void genGraphMatrix(int **tab, float nasycenie, int rozm){
     }
 }
 
-void genGraphList(List** listArray, int **tab, int rozm){
+void genGraphList(List** listArray, int **tab, int rozm) {
     int i, j;
 
-    for (i = 0; i < rozm; i++){
+    for (i = 0; i < rozm; i++) {
         listArray[i] = NULL;
     }
 
-    for (i = 0; i < rozm; i++){
-        for (j = i + 1; j < rozm; j++){
-            if(tab[i][j]){
+    for (i = 0; i < rozm; i++) {
+        for (j = i + 1; j < rozm; j++) {
+            if(tab[i][j]) {
                 listInsert(listArray[i], j, tab[i][j]);
                 listInsert(listArray[j], i, tab[i][j]);
                 tab[i][j] = 0;
@@ -154,13 +154,13 @@ void genGraphList(List** listArray, int **tab, int rozm){
 }
 
 
-slist DFSVisit(int *color, int *tab, int i, slist element, int rozm){ // TODO: ze tablica 2D
+slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) { // TODO: ze tablica 2D
     //wierzcholek odwiedzony
     color[i] = gray;
 
-    for (int j = i+1; j < rozm; j++){
-        if (tab[i][j]){
-            if(color[j] == white){
+    for (int j = i+1; j < rozm; j++) {
+        if (tab[i][j]) {
+            if(color[j] == white) {
                 DFSVisit (color, tab, j, element, rozm);
             }
         }
@@ -173,15 +173,15 @@ slist DFSVisit(int *color, int *tab, int i, slist element, int rozm){ // TODO: z
     return newElem;
 }
 
-slist topologicalSortMatrix (int *colors, int *tab, int rozm){// TODO: ze tablica 2D
+slist topologicalSortMatrix (int *colors, int **tab, int rozm) { // TODO: ze tablica 2D
     slist headTopological = {-1, NULL};
 
-    for (int i = 0; i < rozm; i++){
+    for (int i = 0; i < rozm; i++) {
         colors[i] = white;
     }
 
-    for (int i = 0; i < rozm; i++){
-        if (colors[i] == white){
+    for (int i = 0; i < rozm; i++) {
+        if (colors[i] == white) {
             headTopological = DFSVisit(colors, tab, i, headTopological, rozm);
         }
     }
@@ -190,35 +190,35 @@ slist topologicalSortMatrix (int *colors, int *tab, int rozm){// TODO: ze tablic
 
 
 
-int main(void){
-	srand(time(NULL));
+int main(void) {
+    srand(time(NULL));
 
-	int i, inc, n, start, stop;
-	int** matrix;
-	List** list;
+    int i, inc, n, start, stop;
+    int** matrix;
+    List** list;
 
-	cout<<"Poczatek pomiaru: ";
-	cin>>start;
-	cout<<"Koniec pomiaru: ";
-	cin>>stop;
-	cout<<"Ilosc krokow: ";
-	cin>>n;
-	inc = (stop - start) / n;
+    cout<<"Poczatek pomiaru: ";
+    cin>>start;
+    cout<<"Koniec pomiaru: ";
+    cin>>stop;
+    cout<<"Ilosc krokow: ";
+    cin>>n;
+    inc = (stop - start) / n;
 
-	for(i = 0; i < n; i++){
-		// stop to aktualna proba
-		stop = start + i * inc;
-		list = new List*[stop];
+    for(i = 0; i < n; i++) {
+        // stop to aktualna proba
+        stop = start + i * inc;
+        list = new List*[stop];
 
-		cout<<stop<<":";
-		matrix = createMatrix(stop);
-		genDAGmatrix(matrix, stop);
-		genDAGlist(list, matrix, stop);
+        cout<<stop<<":";
+        matrix = createMatrix(stop);
+        genDAGmatrix(matrix, stop);
+        genDAGlist(list, matrix, stop);
 
-		deleteMatrix(matrix, stop);
-		listArrayDelete(list, stop);
-		cout<<endl;
-	}
+        deleteMatrix(matrix, stop);
+        listArrayDelete(list, stop);
+        cout<<endl;
+    }
 
-	return 0;
+    return 0;
 }
