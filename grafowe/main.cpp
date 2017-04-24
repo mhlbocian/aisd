@@ -153,7 +153,7 @@ void genGraphList(List** listArray, int **tab, int rozm){
     }
 }
 
-slist* topologicalSortMatrix (int *colors, int *tab, int rozm){// TODO: ze tablica 2D
+slist topologicalSortMatrix (int *colors, int *tab, int rozm){// TODO: ze tablica 2D
     slist headTopological = {-1, NULL};
 
     for (int i = 0; i < rozm; i++){
@@ -166,9 +166,10 @@ slist* topologicalSortMatrix (int *colors, int *tab, int rozm){// TODO: ze tabli
             }
         }
     }
+    return headTopological;
 }
 
-DFSVisit(int *tab, int i, slist element, int rozm){ // TODO: ze tablica 2D
+slist DFSVisit(int *tab, int i, slist element, int rozm){ // TODO: ze tablica 2D
     //wierzcholek odwiedzony
     color[i] = gray;
 
