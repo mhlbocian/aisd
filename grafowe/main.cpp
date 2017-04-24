@@ -11,12 +11,21 @@
 #include<stdlib.h>
 #include<time.h>
 
+#define black 0
+#define gray 1
+#define white 2
+
 using namespace std;
 
 struct List{
 	int value;
 	int num;
 	List* next;
+};
+
+struct sList{ //do listy topologicznej
+    int num;
+    slist *next;
 };
 
 int** createMatrix(int n){
@@ -143,6 +152,41 @@ void genGraphList(List** listArray, int **tab, int rozm){
         }
     }
 }
+
+slist* topologicalSortMatrix (int *colors, int *tab, int rozm){// TODO: ze tablica 2D
+    slist headTopological = {-1, NULL};
+
+    for (int i = 0; i < rozm; i++){
+        colors[i] = white;
+    }
+
+    for (int i = 0; i < rozm; i++){
+            if (colors[i] == white){
+                    headTopological = DFS_visit(tab, i, headTopological, rozm);
+            }
+        }
+    }
+}
+
+DFSVisit(int *tab, int i, slist element, int rozm){ // TODO: ze tablica 2D
+    //wierzcholek odwiedzony
+    color[i] = gray;
+
+    for (int j = i+1; j < rozm; j++){
+        if (tab[i][j]){
+            if(color[j] == white){
+                DFS_visit (tab, j, rozm);
+            }
+        }
+    }
+    //wierzcholek przetworzony
+    color[i] = black;
+
+    //tworzymy liste wynikowa, posortowana topologicznie
+    slist newElem = {i, element};
+    return newElem;
+}
+
 
 int main(void){
 	srand(time(NULL));
