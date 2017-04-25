@@ -10,9 +10,9 @@
 #include<iostream>
 #include<stdlib.h>
 #include<time.h>
-#include<cstring>
 #include<limits.h>
-#include<vector>
+
+#define pomiar() cout<<mtime<<";"
 
 #define black 0
 #define gray 1
@@ -20,15 +20,15 @@
 
 using namespace std;
 
-struct List {
+struct tList {
     int value;
     int num;
-    List* next;
+    tList* next;
 };
 
-struct slist {
+struct tSimpleList {
     int num;
-    slist *next;
+    tSimpleList *next;
 };
 
 int** createMatrix(int n) {
@@ -45,59 +45,28 @@ void deleteMatrix(int** matrix, int n) {
     for (int i = 0; i < n; i++) {
         delete matrix[i];
     }
+    delete[] matrix;
 }
 
-void listInsert(List*& item, int value, int num) {
+void listInsert(tList*& item, int value, int num) {
     if (!item) {
-        item = new List;
+        item = new tList;
         item->num = num;
         item->value = value;
         item->next = NULL;
     } else if (value > item->value) {
         listInsert(item->next, value, num);
     } else {
-        List* temp = item;
-        item = new List;
+        tList* temp = item;
+        item = new tList;
         item->num = num;
         item->value = value;
         item->next = temp;
     }
 }
 
-void slistInsert(slist*& list, int num) {
-    if(!list) {
-        list = new slist;
-        list->num = num;
-        list->next = NULL;
-    } else {
-        slistInsert(list->next, num);
-    }
-}
-
-bool isOnList(slist* list, int element) {
-    while(list) {
-        if(list->num == element) return true;
-        list = list->next;
-    }
-
-    return false;
-}
-
-void printGraph(List** graph, int size) {
-    List* temp;
-    for(int i=0; i<size; i++) {
-        cout<<i<<": ";
-        temp = graph[i];
-        while(temp) {
-            cout<<temp->num<<" ";
-            temp = temp->next;
-        }
-        cout<<endl;
-    }
-}
-
-void listArrayDelete(List** list, int size) {
-    List* temp;
+void listArrayDelete(tList** list, int size) {
+    tList* temp;
 
     for (int i = 0; i < size; i++) {
         while (list[i]) {
@@ -106,6 +75,7 @@ void listArrayDelete(List** list, int size) {
             delete temp;
         }
     }
+    delete[] list;
 }
 
 void genDAGmatrix(int** tab, int rozm) {
@@ -129,8 +99,7 @@ void genDAGmatrix(int** tab, int rozm) {
     }
 }
 
-
-void genDAGlist(List** listArray, int **tab, int rozm) {
+void genDAGlist(tList** listArray, int **tab, int rozm) {
     int i, j;
 
     for (i = 0; i < rozm; i++) {
@@ -169,7 +138,7 @@ void genGraphMatrix(int **tab, float nasycenie, int rozm) {
     }
 }
 
-void genGraphList(List** listArray, int **tab, int rozm) {
+void genGraphList(tList** listArray, int **tab, int rozm) {
     int i, j;
 
     for (i = 0; i < rozm; i++) {
@@ -188,10 +157,11 @@ void genGraphList(List** listArray, int **tab, int rozm) {
     }
 }
 
-
-
-slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) {
-    //wierzcholek odwiedzony
+tSimpleList DFSVisit(int *color,
+                     int **tab,
+                     int i,
+                     tSimpleList element,
+                     int rozm) {
     color[i] = gray;
 
     for (int j = i+1; j < rozm; j++) {
@@ -201,34 +171,32 @@ slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) {
             }
         }
     }
-    //wierzcholek przetworzony
     color[i] = black;
+    tSimpleList newElem = {i, &element};
 
-    //tworzymy liste wynikowa, posortowana topologicznie
-    slist newElem = {i, &element};
     return newElem;
 }
 
-slist DFSVisitList(int *color, List* tab[], int i, slist element, int rozm) { // TODO: ze tablica 2D
-    //wierzcholek odwiedzony
+tSimpleList DFSVisitList(int *color,
+                         tList* tab[],
+                         int i,
+                         tSimpleList element,
+                         int rozm) {
     color[i] = gray;
-
     while (tab[i] != NULL) {
         if(color[tab[i]->num] == white) {
             DFSVisitList (color, tab, tab[i]->num, element, rozm);
         }
         tab[i] = (tab[i])->next;
     }
-    //wierzcholek przetworzony
     color[i] = black;
+    tSimpleList newElem = {i, &element};
 
-    //tworzymy liste wynikowa, posortowana topologicznie
-    slist newElem = {i, &element};
     return newElem;
 }
 
-slist topologicalSortMatrix (int *colors, int **tab, int rozm) {
-    slist headTopological = {-1, NULL};
+tSimpleList topologicalSortMatrix (int *colors, int **tab, int rozm) {
+    tSimpleList headTopological = {-1, NULL};
 
     for (int i = 0; i < rozm; i++) {
         colors[i] = white;
@@ -242,8 +210,8 @@ slist topologicalSortMatrix (int *colors, int **tab, int rozm) {
     return headTopological;
 }
 
-slist topologicalSortList(int *colors, List **tab, int rozm) {
-    slist headTopological = {-1, NULL};
+tSimpleList topologicalSortList(int *colors, tList **tab, int rozm) {
+    tSimpleList headTopological = {-1, NULL};
 
     for (int i = 0; i < rozm; i++) {
         colors[i] = white;
@@ -268,52 +236,36 @@ int minKey(int key[], bool mstSet[], int V)
     return min_index;
 }
 
-void primMST(int** graph, int V)
+void PrimMST(int** G, int size)
 {
-    int parent[V]; // Array to store constructed MST
-    int key[V];   // Key values used to pick minimum weight edge in cut
-    bool mstSet[V];  // To represent set of vertices not yet included in MST
+    int parent[size];
+    int key[size];
+    bool mstSet[size];
 
-    // Initialize all keys as INFINITE
-    for (int i = 0; i < V; i++)
+    for (int i = 0; i < size; i++)
         key[i] = INT_MAX, mstSet[i] = false;
-
-    // Always include first 1st vertex in MST.
-    key[0] = 0;     // Make key 0 so that this vertex is picked as first vertex
-    parent[0] = -1; // First node is always root of MST
-
-    // The MST will have V vertices
-    for (int count = 0; count < V-1; count++)
+    key[0] = 0;
+    for (int count = 0; count < size-1; count++)
     {
-        // Pick the minimum key vertex from the set of vertices
-        // not yet included in MST
-        int u = minKey(key, mstSet, V);
+        int u = minKey(key, mstSet, size);
 
-        // Add the picked vertex to the MST Set
         mstSet[u] = true;
-
-        // Update key value and parent index of the adjacent vertices of
-        // the picked vertex. Consider only those vertices which are not yet
-        // included in MST
-        for (int v = 0; v < V; v++)
-
-            // graph[u][v] is non zero only for adjacent vertices of m
-            // mstSet[v] is false for vertices not yet included in MST
-            // Update the key only if graph[u][v] is smaller than key[v]
-            if (graph[u][v] && mstSet[v] == false && graph[u][v] <  key[v])
-                parent[v]  = u, key[v] = graph[u][v];
+        for (int v = 0; v < size; v++)
+            if (G[u][v] && mstSet[v] == false && G[u][v] <  key[v])
+                parent[v]  = u, key[v] = G[u][v];
     }
 }
 
-void PrimList(List** graph, int size) {
-    slist* tv = NULL;
+void PrimList(tList** graph, int size) {
+    int tv[size] = {0};
     int currVertex = 0;
     int edges = 0;
+    
     while(edges < size - 1 && currVertex < size) {
-        slistInsert(tv, currVertex);
+        tv[currVertex] = 1;
         while(graph[currVertex]) {
-            if(!isOnList(tv, graph[currVertex]->num)) {
-                slistInsert(tv, graph[currVertex]->num);
+            if(tv[graph[currVertex]->num] == 0) {
+                tv[graph[currVertex]->num] == 1;
                 edges++;
             }
             graph[currVertex] = graph[currVertex]->next;
@@ -328,7 +280,7 @@ int main(void) {
     int i, inc, n, start, stop;
     int* colors;
     int** matrix;
-    List** list;
+    tList** list;
     clock_t mtime;
 
     cout<<"Poczatek pomiaru: ";
@@ -339,53 +291,53 @@ int main(void) {
     cin>>n;
     inc = (stop - start) / n;
 
-    cout<<"Proba;TSortM;TSortL;0.3M;0.3L;0.7M;0.7L"<<endl;
-    for(i = 0; i < n; i++) {
+    cout<<"Proba;TSortM;TSortL;0.3M;0.3L;0.7M;0.7L;"<<endl;
+    for(i = 0; i < n + 1; i++) {
         stop = start + i * inc;
-        list = new List*[stop];
+        list = new tList*[stop];
         colors = new int[stop];
 
         cout<<stop<<";";
         matrix = createMatrix(stop);
-        
+
         genDAGmatrix(matrix, stop);
         genDAGlist(list, matrix, stop);
 
         mtime = clock();
         topologicalSortMatrix(colors, matrix, stop);
         mtime = clock() - mtime;
-        cout<<mtime<<";";
+        pomiar();
 
         mtime = clock();
         topologicalSortList(colors, list, stop);
         mtime = clock() - mtime;
-        cout<<mtime<<";";
-        
+        pomiar();
+
         genGraphMatrix(matrix, 0.3, stop);
         genGraphList(list, matrix, stop);
 
         mtime = clock();
-        primMST(matrix, stop);
+        PrimMST(matrix, stop);
         mtime = clock() - mtime;
-        cout<<mtime<<";";
+        pomiar();
 
         mtime = clock();
         PrimList(list, stop);
         mtime = clock() - mtime;
-        cout<<mtime<<";";
+        pomiar();
 
         genGraphMatrix(matrix, 0.7, stop);
         genGraphList(list, matrix, stop);
 
         mtime = clock();
-        primMST(matrix, stop);
+        PrimMST(matrix, stop);
         mtime = clock() - mtime;
-        cout<<mtime<<";";
+        pomiar();
 
         mtime = clock();
         PrimList(list, stop);
         mtime = clock() - mtime;
-        cout<<mtime;
+        pomiar();
 
         deleteMatrix(matrix, stop);
         listArrayDelete(list, stop);
