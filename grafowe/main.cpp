@@ -10,6 +10,9 @@
 #include<iostream>
 #include<stdlib.h>
 #include<time.h>
+#include<cstring>
+#include<limits.h>
+#include<vector>
 
 #define black 0
 #define gray 1
@@ -23,7 +26,7 @@ struct List {
     List* next;
 };
 
-struct slist { //do listy topologicznej
+struct slist {
     int num;
     slist *next;
 };
@@ -50,8 +53,46 @@ void listInsert(List*& item, int value, int num) {
         item->num = num;
         item->value = value;
         item->next = NULL;
-    } else {
+    } else if (value > item->value) {
         listInsert(item->next, value, num);
+    } else {
+        List* temp = item;
+        item = new List;
+        item->num = num;
+        item->value = value;
+        item->next = temp;
+    }
+}
+
+void slistInsert(slist*& list, int num) {
+    if(!list) {
+        list = new slist;
+        list->num = num;
+        list->next = NULL;
+    } else {
+        slistInsert(list->next, num);
+    }
+}
+
+bool isOnList(slist* list, int element) {
+    while(list) {
+        if(list->num == element) return true;
+        list = list->next;
+    }
+
+    return false;
+}
+
+void printGraph(List** graph, int size) {
+    List* temp;
+    for(int i=0; i<size; i++) {
+        cout<<i<<": ";
+        temp = graph[i];
+        while(temp) {
+            cout<<temp->num<<" ";
+            temp = temp->next;
+        }
+        cout<<endl;
     }
 }
 
@@ -65,8 +106,6 @@ void listArrayDelete(List** list, int size) {
             delete temp;
         }
     }
-
-    delete[] list;
 }
 
 void genDAGmatrix(int** tab, int rozm) {
@@ -140,14 +179,16 @@ void genGraphList(List** listArray, int **tab, int rozm) {
     for (i = 0; i < rozm; i++) {
         for (j = i + 1; j < rozm; j++) {
             if(tab[i][j]) {
-                listInsert(listArray[i], j, tab[i][j]);
-                listInsert(listArray[j], i, tab[i][j]);
+                listInsert(listArray[i], tab[i][j], j);
+                listInsert(listArray[j], tab[i][j], i);
                 tab[i][j] = 0;
                 tab[j][i] = 0;
             }
         }
     }
 }
+
+
 
 slist DFSVisit(int *color, int **tab, int i, slist element, int rozm) {
     //wierzcholek odwiedzony
@@ -216,6 +257,71 @@ slist topologicalSortList(int *colors, List **tab, int rozm) {
     return headTopological;
 }
 
+int minKey(int key[], bool mstSet[], int V)
+{
+    int min = INT_MAX, min_index;
+
+    for (int v = 0; v < V; v++)
+        if (mstSet[v] == false && key[v] < min)
+            min = key[v], min_index = v;
+
+    return min_index;
+}
+
+void primMST(int** graph, int V)
+{
+    int parent[V]; // Array to store constructed MST
+    int key[V];   // Key values used to pick minimum weight edge in cut
+    bool mstSet[V];  // To represent set of vertices not yet included in MST
+
+    // Initialize all keys as INFINITE
+    for (int i = 0; i < V; i++)
+        key[i] = INT_MAX, mstSet[i] = false;
+
+    // Always include first 1st vertex in MST.
+    key[0] = 0;     // Make key 0 so that this vertex is picked as first vertex
+    parent[0] = -1; // First node is always root of MST
+
+    // The MST will have V vertices
+    for (int count = 0; count < V-1; count++)
+    {
+        // Pick the minimum key vertex from the set of vertices
+        // not yet included in MST
+        int u = minKey(key, mstSet, V);
+
+        // Add the picked vertex to the MST Set
+        mstSet[u] = true;
+
+        // Update key value and parent index of the adjacent vertices of
+        // the picked vertex. Consider only those vertices which are not yet
+        // included in MST
+        for (int v = 0; v < V; v++)
+
+            // graph[u][v] is non zero only for adjacent vertices of m
+            // mstSet[v] is false for vertices not yet included in MST
+            // Update the key only if graph[u][v] is smaller than key[v]
+            if (graph[u][v] && mstSet[v] == false && graph[u][v] <  key[v])
+                parent[v]  = u, key[v] = graph[u][v];
+    }
+}
+
+void PrimList(List** graph, int size) {
+    slist* tv = NULL;
+    int currVertex = 0;
+    int edges = 0;
+    while(edges < size - 1 && currVertex < size) {
+        slistInsert(tv, currVertex);
+        while(graph[currVertex]) {
+            if(!isOnList(tv, graph[currVertex]->num)) {
+                slistInsert(tv, graph[currVertex]->num);
+                edges++;
+            }
+            graph[currVertex] = graph[currVertex]->next;
+        }
+        currVertex++;
+    }
+}
+
 int main(void) {
     srand(time(NULL));
 
@@ -233,15 +339,15 @@ int main(void) {
     cin>>n;
     inc = (stop - start) / n;
 
-    cout<<"Proba;Macierz;Lista"<<endl;
+    cout<<"Proba;TSortM;TSortL;0.3M;0.3L;0.7M;0.7L"<<endl;
     for(i = 0; i < n; i++) {
-        // stop to aktualna proba
         stop = start + i * inc;
         list = new List*[stop];
         colors = new int[stop];
 
         cout<<stop<<";";
         matrix = createMatrix(stop);
+        
         genDAGmatrix(matrix, stop);
         genDAGlist(list, matrix, stop);
 
@@ -252,6 +358,32 @@ int main(void) {
 
         mtime = clock();
         topologicalSortList(colors, list, stop);
+        mtime = clock() - mtime;
+        cout<<mtime<<";";
+        
+        genGraphMatrix(matrix, 0.3, stop);
+        genGraphList(list, matrix, stop);
+
+        mtime = clock();
+        primMST(matrix, stop);
+        mtime = clock() - mtime;
+        cout<<mtime<<";";
+
+        mtime = clock();
+        PrimList(list, stop);
+        mtime = clock() - mtime;
+        cout<<mtime<<";";
+
+        genGraphMatrix(matrix, 0.7, stop);
+        genGraphList(list, matrix, stop);
+
+        mtime = clock();
+        primMST(matrix, stop);
+        mtime = clock() - mtime;
+        cout<<mtime<<";";
+
+        mtime = clock();
+        PrimList(list, stop);
         mtime = clock() - mtime;
         cout<<mtime;
 
