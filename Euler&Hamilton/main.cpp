@@ -222,7 +222,7 @@ DeepEuler:
                 goto DeepEuler;
             }
         }
-        cout<<stack[top--]<<" ";
+        top--;
     }
 }
 
@@ -232,15 +232,6 @@ int main() {
     int i, inc, n, start, stop;
     bool** matrix;
     clock_t mtime;
-
-    /* DEBUG *
-        int DBG = 5;
-        matrix = createMatrix(DBG);
-        genGraphMatrix(matrix, 0.3, DBG);
-        printMatrix(matrix, DBG);
-        Euler(matrix, DBG);
-        return 0;
-    /* END DEBUG */
 
     cout<<"Poczatek pomiaru: ";
     cin>>start;
