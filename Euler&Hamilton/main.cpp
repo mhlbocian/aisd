@@ -80,11 +80,11 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     for (i = 0; i < rozm - 1; i++){
         edgesToAdd = (rozm - 1 - i) * nasycenie - numberOfEdgesRight[i];
 
-        if(edgesToAdd + numberOfEdgesLeft[i] + numberOfEdgesRight[i] % 2 == 1){
+        if((edgesToAdd + numberOfEdgesLeft[i] + numberOfEdgesRight[i]) % 2 == 1){
             edgesToAdd += 1;
         }
 
-        while(edgesToAdd-- > 0){
+        while(edgesToAdd > 0){
             do{
                 j = rand() % rozm;
             }while(j <= i || tab[i][j]);
@@ -93,17 +93,18 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
             tab[j][i] = true;
             numberOfEdgesRight[i]++;
             numberOfEdgesLeft[j]++;
+            edgesToAdd--;
         }
     }
 
     i = rozm - 1;
     if(numberOfEdgesLeft[i] % 2 == 1){
-        edgesToAdd += 2;
+        edgesToAdd = 2;
 
-        for(k = 0; k < rozm; k++){
+        for(k = 0; k < rozm - 1; k++){
             if(tab[i][k] == false){
-                for(j = 0; j < rozm; j++){
-                    if(tab[k][j] == tab[i][j]){
+                for(j = 0; j < rozm - 1; j++){
+                    if(tab[k][j] == tab[i][j] && k != j){
                         tab[k][j] ^= 1;
                         tab[i][j] ^= 1;
                         tab[j][k] ^= 1;
@@ -117,6 +118,7 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
                         break;
                     }
                 }
+                break;
             }
         }
     }
@@ -172,7 +174,7 @@ int main(){
         matrix = createMatrix(stop);
 
         genGraphMatrix(matrix, 0.3, stop);
-        //printMatrix(matrix, stop);
+        printMatrix(matrix, stop);
         cout<<endl;
         /*
         mtime = clock();
@@ -185,7 +187,7 @@ int main(){
         mtime = clock() - mtime;
         pomiar();
 */
-        genGraphMatrix(matrix, 0.7, stop);
+        //genGraphMatrix(matrix, 0.7, stop);
         //printMatrix(matrix, stop);
         cout<<endl;
 /*
