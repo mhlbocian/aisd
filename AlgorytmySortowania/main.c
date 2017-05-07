@@ -43,7 +43,7 @@ int main (int argc, const char** argv)
 	{"malejacy", gend},
 	{"staly", genc}
     };
-    
+    goto test2;
 test1:
     printf("Poczatek pomiaru: ");
     scanf("%d", &start);

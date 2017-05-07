@@ -147,16 +147,40 @@ void printMatrix (bool **tab, int rozm){
 
 void Hamilton (bool **tab, int rozm){}
 
-void Euler (bool **tab, int rozm){}
+void Euler (bool **tab, int rozm){
+	bool visited[rozm][rozm] = {false};
+	int top = -1;
+	int stack[rozm*rozm];
+	
+	stack[++top] = 0;
+DeepEuler:
+	while (top != -1){
+		for (int i = 0; i < rozm; i++) {
+			if (tab[stack[top]][i] && !visited[stack[top]][i]){
+				visited[stack[top]][i] = true;
+				visited[i][stack[top]] = true;
+				stack[++top] = i;
+				goto DeepEuler;
+			}
+		}
+		cout<<stack[top--]<<" ";
+	}
+}
 
 int main(){
     srand(time(NULL));
+    
     int i, inc, n, start, stop;
-
     bool** matrix;
-
     clock_t mtime;
-
+    
+    int DBG = 5;
+    matrix = createMatrix(DBG);
+    genGraphMatrix(matrix, 0.3, DBG);
+    printMatrix(matrix, DBG);
+    Euler(matrix, DBG);
+    return 0;
+    
     cout<<"Poczatek pomiaru: ";
     cin>>start;
     cout<<"Koniec pomiaru: ";
@@ -164,7 +188,6 @@ int main(){
     cout<<"Ilosc krokow: ";
     cin>>n;
     inc = (stop - start) / n;
-
     cout<<"Proba;A-0,3;B-0,3;A-0,7;B-0,7;B-0,5"<<endl;
 
     for(i = 0; i < n + 1; i++) {
