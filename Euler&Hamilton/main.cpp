@@ -34,6 +34,16 @@ void deleteMatrix(bool** matrix, int n) {
     delete[] matrix;
 }
 
+void printMatrix (bool **tab, int rozm) {
+    for (int i = 0; i < rozm; i++) {
+        for (int j = 0; j < rozm; j++)
+            cout<<tab[i][j]<<" ";
+
+        cout<<endl;
+    }
+
+}
+
 void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     int i, j, k, sumOfEdges = 0, edgesToAdd;
     int *numberOfEdgesLeft;
@@ -135,17 +145,66 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     delete [] numberOfEdgesRight;
 }
 
-void printMatrix (bool **tab, int rozm) {
-    for (int i = 0; i < rozm; i++) {
-        for (int j = 0; j < rozm; j++)
-            cout<<tab[i][j]<<" ";
+/* funkcja pomocnicza sprawdza czy krawedz v moze byc dodana na
+ * index pos w tworzonym cyklu Hamiltona */
+bool isSafe(bool** graph, int v, int path[], int pos, int size)
+{
+    /* sprawdza czy wierzcholek jest incydentny do poprzenio
+     * dodanego wierzcholka */
+    if (graph[path[pos-1]][v] == 0)
+        return false;
+    /* sprawdza czy wierzcholek zostal juz uzyty */
+    for (int i = 0; i < pos; i++)
+        if (path[i] == v)
+            return false;
 
-        cout<<endl;
-    }
-
+    return true;
 }
 
-void Hamilton (bool **tab, int rozm) {}
+/* rekurencyjna funkcja rozwiazujaca problem Hamiltona */
+bool hamCycleUtil(bool** graph, int path[], int pos, int size)
+{
+    /* czy wszystkie wierzcholki zostaly juz uzyte */
+    if (pos == size)
+    {
+        /* i czy jest krawedz od ostatniego do pierwszego */
+        if (graph[path[pos-1]][path[0]] == 1)
+            return true;
+        else
+            return false;
+    }
+    /* znajdowanie nastepnego wierzcholka */
+    for (int v = 1; v < size; v++)
+    {
+        /* czy mozna dodac do cyklu */
+        if (isSafe(graph, v, path, pos, size))
+        {
+            path[pos] = v;
+            /* recur to construct rest of the path */
+            if (hamCycleUtil (graph, path, pos+1, size) == true)
+                return true;
+
+            /* gdy dodana krawedz nie prowadzi do wyniku  */
+            path[pos] = -1;
+        }
+    }
+    /* gdy wierzcholek nie moze zostac dodany do konstruowanego cyklu */
+    return false;
+}
+
+bool Hamilton(bool** graph, int size)
+{
+    int *path = new int[size];
+    for (int i = 0; i < size; i++)
+        path[i] = -1;
+
+    path[0] = 0;
+    if (hamCycleUtil(graph, path, 1, size) == false)
+    {
+        return false;
+    }
+    return true;
+}
 
 void Euler (bool **tab, int rozm) {
     bool visited[rozm][rozm] = {false};
