@@ -251,7 +251,7 @@ int main() {
         cout<<stop<<";";
 
         genGraphMatrix(matrix, 0.3, stop);
-/* *
+/* */
         mtime = clock();
         Euler(matrix, stop);
         mtime = clock() - mtime;
