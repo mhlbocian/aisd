@@ -51,7 +51,7 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     }
 
     //tworzenie min drzewa rozpinajacego - spojnosc grafu
-    for (i = 0; (i + 1) * 2 < rozm; i++){
+    for (i = 0; (i + 1) * 2 < rozm; i++) {
         j = i * 2 + 1;
 
         tab[i][j] = true;
@@ -65,7 +65,7 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
         numberOfEdgesRight[i] += 2;
     }
 
-    if (rozm % 2 == 0){
+    if (rozm % 2 == 0) {
         i = rozm / 2 - 1;
         j = rozm - 1;
 
@@ -76,18 +76,18 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
         numberOfEdgesLeft[j]++;
     }
 
-     //wypelnianie krawedzi
-    for (i = 0; i < rozm - 1; i++){
+    //wypelnianie krawedzi
+    for (i = 0; i < rozm - 1; i++) {
         edgesToAdd = (rozm - 1 - i) * nasycenie - numberOfEdgesRight[i];
 
-        if((edgesToAdd + numberOfEdgesLeft[i] + numberOfEdgesRight[i]) % 2 == 1){
+        if((edgesToAdd + numberOfEdgesLeft[i] + numberOfEdgesRight[i]) % 2 == 1) {
             edgesToAdd += 1;
         }
 
-        while(edgesToAdd > 0){
-            do{
+        while(edgesToAdd > 0) {
+            do {
                 j = rand() % rozm;
-            }while(j <= i || tab[i][j]);
+            } while(j <= i || tab[i][j]);
 
             tab[i][j] = true;
             tab[j][i] = true;
@@ -98,13 +98,13 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     }
 
     i = rozm - 1;
-    if(numberOfEdgesLeft[i] % 2 == 1){
+    if(numberOfEdgesLeft[i] % 2 == 1) {
         edgesToAdd = 2;
 
-        for(k = 0; k < rozm - 1; k++){
-            if(tab[i][k] == false){
-                for(j = 0; j < rozm - 1; j++){
-                    if(tab[k][j] == tab[i][j] && k != j){
+        for(k = 0; k < rozm - 1; k++) {
+            if(tab[i][k] == false) {
+                for(j = 0; j < rozm - 1; j++) {
+                    if(tab[k][j] == tab[i][j] && k != j) {
                         tab[k][j] ^= 1;
                         tab[i][j] ^= 1;
                         tab[j][k] ^= 1;
@@ -114,7 +114,7 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
                         edgesToAdd--;
                     }
 
-                    if (edgesToAdd == 0){
+                    if (edgesToAdd == 0) {
                         break;
                     }
                 }
@@ -123,20 +123,20 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
         }
     }
 
-/*
-    //sprawdzenie
-    for(i = 0; i < rozm; i++){
-        sumOfEdges += numberOfEdgesRight[i];
-    }
+    /*
+        //sprawdzenie
+        for(i = 0; i < rozm; i++){
+            sumOfEdges += numberOfEdgesRight[i];
+        }
 
-    cout<<sumOfEdges<<endl;
-*/
+        cout<<sumOfEdges<<endl;
+    */
     delete [] numberOfEdgesLeft;
     delete [] numberOfEdgesRight;
 }
 
-void printMatrix (bool **tab, int rozm){
-    for (int i = 0; i < rozm; i++){
+void printMatrix (bool **tab, int rozm) {
+    for (int i = 0; i < rozm; i++) {
         for (int j = 0; j < rozm; j++)
             cout<<tab[i][j]<<" ";
 
@@ -145,42 +145,44 @@ void printMatrix (bool **tab, int rozm){
 
 }
 
-void Hamilton (bool **tab, int rozm){}
+void Hamilton (bool **tab, int rozm) {}
 
-void Euler (bool **tab, int rozm){
-	bool visited[rozm][rozm] = {false};
-	int top = -1;
-	int stack[rozm*rozm];
-	
-	stack[++top] = 0;
+void Euler (bool **tab, int rozm) {
+    bool visited[rozm][rozm] = {false};
+    int top = -1;
+    int stack[rozm*rozm];
+
+    stack[++top] = 0;
 DeepEuler:
-	while (top != -1){
-		for (int i = 0; i < rozm; i++) {
-			if (tab[stack[top]][i] && !visited[stack[top]][i]){
-				visited[stack[top]][i] = true;
-				visited[i][stack[top]] = true;
-				stack[++top] = i;
-				goto DeepEuler;
-			}
-		}
-		cout<<stack[top--]<<" ";
-	}
+    while (top != -1) {
+        for (int i = 0; i < rozm; i++) {
+            if (tab[stack[top]][i] && !visited[stack[top]][i]) {
+                visited[stack[top]][i] = true;
+                visited[i][stack[top]] = true;
+                stack[++top] = i;
+                goto DeepEuler;
+            }
+        }
+        cout<<stack[top--]<<" ";
+    }
 }
 
-int main(){
+int main() {
     srand(time(NULL));
-    
+
     int i, inc, n, start, stop;
     bool** matrix;
     clock_t mtime;
-    
-    int DBG = 5;
-    matrix = createMatrix(DBG);
-    genGraphMatrix(matrix, 0.3, DBG);
-    printMatrix(matrix, DBG);
-    Euler(matrix, DBG);
-    return 0;
-    
+
+    /* DEBUG *
+        int DBG = 5;
+        matrix = createMatrix(DBG);
+        genGraphMatrix(matrix, 0.3, DBG);
+        printMatrix(matrix, DBG);
+        Euler(matrix, DBG);
+        return 0;
+    /* END DEBUG */
+
     cout<<"Poczatek pomiaru: ";
     cin>>start;
     cout<<"Koniec pomiaru: ";
@@ -209,11 +211,11 @@ int main(){
         Hamilton(matrix, stop);
         mtime = clock() - mtime;
         pomiar();
-*/
+        */
         //genGraphMatrix(matrix, 0.7, stop);
         //printMatrix(matrix, stop);
         cout<<endl;
-/*
+        /*
         mtime = clock();
         Euler(matrix, stop);
         mtime = clock() - mtime;
@@ -223,7 +225,7 @@ int main(){
         Hamilton(matrix, stop);
         mtime = clock() - mtime;
         pomiar();
-*/
+        */
         //zadanie drugie - prawdopodobnie mniejsze dane
 
         deleteMatrix(matrix, stop);
