@@ -9,13 +9,16 @@
  */
 
 #include <iostream>
-#include<stdlib.h>
-#include<time.h>
-#include<limits.h>
+#include <cstdio>
+#include <stdlib.h>
+#include <time.h>
+#include <limits.h>
 
-#define pomiar() cout<<mtime<<";"
+#define pomiar() cout<<mtime <<";"
 
 using namespace std;
+
+int stack[1000000];
 
 bool** createMatrix(int n) {
     bool** matrix = new bool*[n];
@@ -209,7 +212,6 @@ bool Hamilton(bool** graph, int size)
 void Euler (bool **tab, int rozm) {
     bool visited[rozm][rozm] = {false};
     int top = -1;
-    int stack[rozm*rozm];
 
     stack[++top] = 0;
 DeepEuler:
@@ -228,7 +230,8 @@ DeepEuler:
 
 int main() {
     srand(time(NULL));
-
+    setbuf(stdout, NULL);
+    
     int i, inc, n, start, stop;
     bool** matrix;
     clock_t mtime;
@@ -244,38 +247,33 @@ int main() {
 
     for(i = 0; i < n + 1; i++) {
         stop = start + i * inc;
-
-        //cout<<stop<<";";
         matrix = createMatrix(stop);
+        cout<<stop<<";";
 
         genGraphMatrix(matrix, 0.3, stop);
-        printMatrix(matrix, stop);
-        cout<<endl;
-        /*
+/* *
         mtime = clock();
         Euler(matrix, stop);
         mtime = clock() - mtime;
         pomiar();
-
+/* */
         mtime = clock();
         Hamilton(matrix, stop);
         mtime = clock() - mtime;
         pomiar();
-        */
-        //genGraphMatrix(matrix, 0.7, stop);
-        //printMatrix(matrix, stop);
-        cout<<endl;
-        /*
+/* */
+        genGraphMatrix(matrix, 0.7, stop);
+/* */
         mtime = clock();
         Euler(matrix, stop);
         mtime = clock() - mtime;
         pomiar();
-
+/* */
         mtime = clock();
         Hamilton(matrix, stop);
         mtime = clock() - mtime;
         pomiar();
-        */
+/* */
         //zadanie drugie - prawdopodobnie mniejsze dane
 
         deleteMatrix(matrix, stop);
