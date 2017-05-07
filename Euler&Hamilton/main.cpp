@@ -35,7 +35,7 @@ void deleteMatrix(bool** matrix, int n) {
 }
 
 void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
-    int i, j, sumOfEdges = 0, edgesToAdd;
+    int i, j, k, sumOfEdges = 0, edgesToAdd;
     int *numberOfEdgesLeft;
     int *numberOfEdgesRight;
     numberOfEdgesLeft = new int[rozm];
@@ -80,7 +80,7 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     for (i = 0; i < rozm - 1; i++){
         edgesToAdd = (rozm - 1 - i) * nasycenie - numberOfEdgesRight[i];
 
-        if(edgesToAdd + numberOfEdgesLeft[i] % 2 == 1){
+        if(edgesToAdd + numberOfEdgesLeft[i] + numberOfEdgesRight[i] % 2 == 1){
             edgesToAdd += 1;
         }
 
@@ -100,15 +100,23 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
     if(numberOfEdgesLeft[i] % 2 == 1){
         edgesToAdd += 2;
 
-        for(j = 0; j < rozm; j++){
-            if(tab[i - 1][j] == tab[i][j]){
-                tab[i - 1][j] ^= 1;
-                tab[i][j] ^= 1;
-                edgesToAdd--;
-            }
+        for(k = 0; k < rozm; k++){
+            if(tab[i][k] == false){
+                for(j = 0; j < rozm; j++){
+                    if(tab[k][j] == tab[i][j]){
+                        tab[k][j] ^= 1;
+                        tab[i][j] ^= 1;
+                        tab[j][k] ^= 1;
+                        tab[j][i] ^= 1;
+                        tab[i][k] = true;
+                        tab[k][i] = true;
+                        edgesToAdd--;
+                    }
 
-            if (edgesToAdd == 0){
-                break;
+                    if (edgesToAdd == 0){
+                        break;
+                    }
+                }
             }
         }
     }
