@@ -13,8 +13,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <limits.h>
+#include <fstream>
 
-#define pomiar() cout<<mtime <<";"
+#define pomiar() wy<<mtime <<";"
 
 using namespace std;
 
@@ -234,6 +235,9 @@ int main() {
     bool** matrix;
     bool** visited;
     clock_t mtime;
+    
+    fstream wy;
+    wy.open("wynikiI.txt", ios::out | ios::app);
 
     cout<<"Rozmiar macierzy: ";
     cin>>rozm;
@@ -241,12 +245,14 @@ int main() {
     cin>>powt;
 
     cout<<"Proba;A-0,3;B-0,3;A-0,7;B-0,7;"<<endl;
-
+    wy<<"Proba;A-0,3;B-0,3;A-0,7;B-0,7;"<<endl;
+    
     for(i = 0; i < powt; i++) {
         matrix = createMatrix(rozm);
         visited = createMatrix(rozm);
         cout<<rozm<<";";
-
+        wy<<rozm<<";";
+            
         genGraphMatrix(matrix, 0.3, rozm);
 /* */
         mtime = clock();
@@ -276,7 +282,9 @@ int main() {
         deleteMatrix(visited, rozm);
         deleteMatrix(matrix, rozm);
         cout<<endl;
+        wy<<endl;
     }
 
+    wy.close();
     return 0;
 }
