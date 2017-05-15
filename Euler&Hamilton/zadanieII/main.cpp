@@ -13,8 +13,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <limits.h>
+#include <fstream>
 
-#define pomiar() cout<<mtime <<";"
+#define pomiar() wy<<mtime <<";"
 
 using namespace std;
 
@@ -210,6 +211,8 @@ bool Hamilton(bool** graph, int size, int first)
 int main() {
     srand(time(NULL));
     setbuf(stdout, NULL);
+    fstream wy;
+    wy.open("wyniki16.txt", ios::out);
 
     int i, inc, rozm, powt;
     bool** matrix;
@@ -221,23 +224,27 @@ int main() {
     cin>>powt;
 
     cout<<"Proba;B-0,5;"<<endl;
+    wy<<"Proba;B-0,5;"<<endl;
 
     for(i = 0; i < powt; i++) {
         matrix = createMatrix(rozm);
         cout<<rozm<<";";
+        wy<<rozm<<";";
 
         genGraphMatrix(matrix, 0.5, rozm);
+        //printMatrix(matrix, rozm);
 /* */
-            mtime = clock();
+        mtime = clock();
         for (int i = 0; i < rozm; i++){
             Hamilton(matrix, rozm, i);
         }
-            mtime = clock() - mtime;
-            pomiar();
+        mtime = clock() - mtime;
+        pomiar();
 /* */
         deleteMatrix(matrix, rozm);
         cout<<endl;
+        wy<<endl;
     }
-
+    wy.close();
     return 0;
 }
