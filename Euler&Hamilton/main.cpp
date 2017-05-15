@@ -27,6 +27,12 @@ bool** createMatrix(int n) {
         matrix[i] = new bool[n];
     }
 
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++){
+            matrix[i][j] = false;
+        }
+    }
+
     return matrix;
 }
 
@@ -136,14 +142,6 @@ void genGraphMatrix(bool **tab, float nasycenie, int rozm) {
         }
     }
 
-    /*
-        //sprawdzenie
-        for(i = 0; i < rozm; i++){
-            sumOfEdges += numberOfEdgesRight[i];
-        }
-
-        cout<<sumOfEdges<<endl;
-    */
     delete [] numberOfEdgesLeft;
     delete [] numberOfEdgesRight;
 }
@@ -209,8 +207,8 @@ bool Hamilton(bool** graph, int size)
     return true;
 }
 
-void Euler (bool **tab, int rozm) {
-    bool visited[rozm][rozm] = {false};
+void Euler (bool **tab, bool **visited, int rozm) {
+    //bool visited[rozm][rozm] = {false};
     int top = -1;
 
     stack[++top] = 0;
@@ -231,52 +229,52 @@ DeepEuler:
 int main() {
     srand(time(NULL));
     setbuf(stdout, NULL);
-    
-    int i, inc, n, start, stop;
+
+    int i, inc, n, rozm, powt;
     bool** matrix;
+    bool** visited;
     clock_t mtime;
 
-    cout<<"Poczatek pomiaru: ";
-    cin>>start;
-    cout<<"Koniec pomiaru: ";
-    cin>>stop;
-    cout<<"Ilosc krokow: ";
-    cin>>n;
-    inc = (stop - start) / n;
-    cout<<"Proba;A-0,3;B-0,3;A-0,7;B-0,7;B-0,5"<<endl;
+    cout<<"Rozmiar macierzy: ";
+    cin>>rozm;
+    cout<<"Ilosc powtorzen: ";
+    cin>>powt;
 
-    for(i = 0; i < n + 1; i++) {
-        stop = start + i * inc;
-        matrix = createMatrix(stop);
-        cout<<stop<<";";
+    cout<<"Proba;A-0,3;B-0,3;A-0,7;B-0,7;"<<endl;
 
-        genGraphMatrix(matrix, 0.3, stop);
-/* */
-        mtime = clock();
-        Euler(matrix, stop);
-        mtime = clock() - mtime;
-        pomiar();
-/* */
-        mtime = clock();
-        Hamilton(matrix, stop);
-        mtime = clock() - mtime;
-        pomiar();
-/* */
-        genGraphMatrix(matrix, 0.7, stop);
-/* */
-        mtime = clock();
-        Euler(matrix, stop);
-        mtime = clock() - mtime;
-        pomiar();
-/* */
-        mtime = clock();
-        Hamilton(matrix, stop);
-        mtime = clock() - mtime;
-        pomiar();
-/* */
-        //zadanie drugie - prawdopodobnie mniejsze dane
+    for(i = 0; i < powt; i++) {
+        matrix = createMatrix(rozm);
+        visited = createMatrix(rozm);
+        cout<<rozm<<";";
 
-        deleteMatrix(matrix, stop);
+        genGraphMatrix(matrix, 0.3, rozm);
+/* */
+        mtime = clock();
+        Euler(matrix, visited, rozm);
+        mtime = clock() - mtime;
+        pomiar();
+/* */
+        mtime = clock();
+        Hamilton(matrix, rozm);
+        mtime = clock() - mtime;
+        pomiar();
+/* */
+        deleteMatrix(visited, rozm);
+        visited = createMatrix(rozm);
+        genGraphMatrix(matrix, 0.7, rozm);
+/* */
+        mtime = clock();
+        Euler(matrix, visited, rozm);
+        mtime = clock() - mtime;
+        pomiar();
+/* */
+        mtime = clock();
+        Hamilton(matrix, rozm);
+        mtime = clock() - mtime;
+        pomiar();
+/* */
+        deleteMatrix(visited, rozm);
+        deleteMatrix(matrix, rozm);
         cout<<endl;
     }
 
