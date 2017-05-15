@@ -214,7 +214,7 @@ int main() {
     srand(time(NULL));
     setbuf(stdout, NULL);
     fstream wy;
-    wy.open("wyniki16.txt", ios::out);
+    wy.open("wyniki16.txt", ios::out | ios::app);
 
     int i, inc, rozm, powt;
     bool** matrix;
