@@ -166,6 +166,8 @@ bool isSafe(bool** graph, int v, int path[], int pos, int size)
 /* rekurencyjna funkcja rozwiazujaca problem Hamiltona */
 bool hamCycleUtil(bool** graph, int path[], int pos, int size)
 {
+    bool found = false;
+    
     /* czy wszystkie wierzcholki zostaly juz uzyte */
     if (pos == size)
     {
@@ -184,23 +186,23 @@ bool hamCycleUtil(bool** graph, int path[], int pos, int size)
             path[pos] = v;
             /* recur to construct rest of the path */
             if (hamCycleUtil (graph, path, pos+1, size) == true)
-                return true;
+                found = true;
 
             /* gdy dodana krawedz nie prowadzi do wyniku  */
             path[pos] = -1;
         }
     }
     /* gdy wierzcholek nie moze zostac dodany do konstruowanego cyklu */
-    return false;
+    return found;
 }
 
-bool Hamilton(bool** graph, int size, int first)
+bool Hamilton(bool** graph, int size)
 {
     int *path = new int[size];
     for (int i = 0; i < size; i++)
         path[i] = -1;
 
-    path[0] = first;
+    path[0] = 0;
     if (hamCycleUtil(graph, path, 1, size) == false)
     {
         return false;
@@ -232,12 +234,9 @@ int main() {
         wy<<rozm<<";";
 
         genGraphMatrix(matrix, 0.5, rozm);
-        //printMatrix(matrix, rozm);
 /* */
         mtime = clock();
-        for (int i = 0; i < rozm; i++){
-            Hamilton(matrix, rozm, i);
-        }
+        Hamilton(matrix, rozm);
         mtime = clock() - mtime;
         pomiar();
 /* */
