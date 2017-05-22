@@ -172,9 +172,7 @@ int dynamicznyPlecak(int rozm, int ladownosc, int ciezar[], int wart[]){
 			else{
 				tab[i][j] = max(tab[i-1][j], tab[i-1][j-ciezar[i-1]] + wart[i-1]);
 			}
-			cout<<tab[i][j]<<" ";
 		}
-		cout<<endl;
 	}
 	
 	wartosc = tab[rozm][ladownosc];
@@ -207,7 +205,7 @@ int main() {
     cin>>x;
 	//x = 1;
 
-    cout<<"rozm;wartosc zachlanny; czas zachlanny; wartosc dynamiczny; czas dynamiczny"<<endl;
+    cout<<"rozm;wartosc dynamiczny;czas dynamiczny;wartosc zachlanny;czas zachlanny;"<<endl;
 
     for(i = 0; i < x; i++) {
         ciezar = new int[n]; //
@@ -216,19 +214,21 @@ int main() {
         losuj(ciezar, n, b * 0.3);//
         losuj(wart, n, b);//
 		
-        wypiszTab(ciezar, n);
-        wypiszTab(wart, n);
+        //wypiszTab(ciezar, n);
+        //wypiszTab(wart, n);
 
-        mtime = clock();
-        wartosc = zachlannyPlecak(n, b, ciezar, wart);
-        cout<<wartosc<<";";
-        mtime = clock() - mtime;
-        //pomiar();
+        cout<<n<<";";
 
         mtime = clock();
         wartosc = dynamicznyPlecak(n, b, ciezar, wart);
         cout<<wartosc<<";";
 		mtime = clock() - mtime;
+        //pomiar();
+
+        mtime = clock();
+        wartosc = zachlannyPlecak(n, b, ciezar, wart);
+        cout<<wartosc<<";";
+        mtime = clock() - mtime;
         //pomiar();
 
         delete ciezar;//
