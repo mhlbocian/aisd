@@ -13,8 +13,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <limits.h>
+#include <math.h>
 
 #define pomiar() cout<<mtime <<";"
+#define elo(x) cout<<"elo "<<x<<endl;
 
 using namespace std;
 
@@ -145,33 +147,77 @@ int zachlannyPlecak(int rozm, int ladownosc, int ciezar[], int wart[]){
     return sumaWart;
 }
 
-//int dynamicznyPlecak(int rozm, int ladownosc, int ciezar[], int wart[]){}
+int dynamicznyPlecak(int rozm, int ladownosc, int ciezar[], int wart[]){
+	int** tab = new int*[rozm+ 1];
+	int wartosc;
+	
+	//wiersze = rozm [ciezar][rozm]
+	for(int i = 0; i < rozm+1; i++){
+		tab[i] = new int[ladownosc+1];
+	}
+	
+	for (int i = 0; i <= ladownosc; i++){
+		tab[0][i] = 0;
+	}
+	
+	for (int i = 0; i <= rozm; i++){
+		tab[i][0] = 0;
+	}
+	
+	for (int i = 1; i <= rozm; i++){
+		for(int j = 0; j <= ladownosc; j++){
+			if(ciezar[i-1] > j){
+				tab[i][j] = tab[i-1][j];
+			}
+			else{
+				tab[i][j] = max(tab[i-1][j], tab[i-1][j-ciezar[i-1]] + wart[i-1]);
+			}
+			cout<<tab[i][j]<<" ";
+		}
+		cout<<endl;
+	}
+	
+	wartosc = tab[rozm][ladownosc];
+	
+	for(int i = 0; i < rozm + 1; i++){
+		delete [] tab[i];
+	}
+	
+	delete [] tab;
+	
+	return wartosc;
+}
 
 int main() {
     srand(time(NULL));
     setbuf(stdout, NULL);
 
     int i, n, b, x, wartosc, *wart, *ciezar;
+    //int wart[] = {};
+    //int ciezar[] = {};
     clock_t mtime;
 
     cout<<"Liczba elementow: ";
     cin>>n;
+	//
     cout<<"Ladownosc: ";
     cin>>b;
+	//
     cout<<"Ilosc powtorzen: ";
     cin>>x;
+	//x = 1;
 
     cout<<"rozm;wartosc zachlanny; czas zachlanny; wartosc dynamiczny; czas dynamiczny"<<endl;
 
     for(i = 0; i < x; i++) {
-        ciezar = new int[n];
-        wart = new int[n];
+        ciezar = new int[n]; //
+        wart = new int[n]; //
 
-        losuj(ciezar, n, b * 0.3);
-        losuj(wart, n, b);
-
-        //wypiszTab(ciezar, n);
-        //wypiszTab(wart, n);
+        losuj(ciezar, n, b * 0.3);//
+        losuj(wart, n, b);//
+		
+        wypiszTab(ciezar, n);
+        wypiszTab(wart, n);
 
         mtime = clock();
         wartosc = zachlannyPlecak(n, b, ciezar, wart);
@@ -180,12 +226,13 @@ int main() {
         //pomiar();
 
         mtime = clock();
-        //wartosc = dynamicznyPlecak();
-        mtime = clock() - mtime;
+        wartosc = dynamicznyPlecak(n, b, ciezar, wart);
+        cout<<wartosc<<";";
+		mtime = clock() - mtime;
         //pomiar();
 
-        delete ciezar;
-        delete wart;
+        delete ciezar;//
+        delete wart;//
         cout<<endl;
     }
 
